@@ -1,4 +1,31 @@
 \documentclass[letterpaper,12pt]{article}
+
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+
 \usepackage{tabularx} % extra features for tabular environment
 \usepackage{amsmath}  % improve math presentation
 \usepackage{graphicx} % takes care of graphic including machinery
@@ -37,9 +64,69 @@
 
 2.	Αν ένα νεκρό σημείο έχει ακριβώς 3 γείτονες, γίνεται ζωντανό στον επόμενο γύρο \newline
 
-Τρέχουμε το παραπάνω σενάριο για 1000 γενιές (γύρους) σε πίνακες διαστάσεων 64x64, 1024x1024 και 4096x4096.
+Τρέχουμε το παραπάνω σενάριο για 1000 γενιές (γύρους) σε πίνακες διαστάσεων 64x64, 1024x1024 και 4096x4096. \newline
 
-Ο κώδικας ο οποίος ζητείται να παραλληλοποιηθεί είναι ο εξής:
+Ο κώδικας ο οποίος ζητείται να παραλληλοποιηθεί είναι ο εξής.
+
+
+\begin{lstlisting}
+for ( t = 0 ; t < T ; t++ ) {
+        #pragma omp parallel for shared (previous, current) private (i,j,nbrs)
+         for ( i = 1 ; i < N-1 ; i++ )
+            for ( j = 1 ; j < N-1 ; j++ ) {
+                nbrs = previous[i+1][j+1] + previous[i+1][j] + previous[i+1][j-1] \
+                       + previous[i][j-1] + previous[i][j+1] \
+                       + previous[i-1][j-1] + previous[i-1][j] + previous[i-1][j+1];
+                if ( nbrs == 3 || ( previous[i][j]+nbrs ==3 ) )
+                    current[i][j]=1;
+                else
+                    current[i][j]=0;
+            }
+
+        #ifdef OUTPUT
+        print_to_pgm(current, N, t+1);
+        #endif
+        //Swap current array with previous array
+        swap=current;
+        current=previous;
+        previous=swap;
+    }
+\end{lstlisting}
+
+
+
+Το πρώτο for-loop, το οποίο είναι η αλλαγή των γενιών, δεν έχει νόημα να παραλληλοποιηθεί αφού χρειαζόμαστε την τιμή της προηγούμενης γενιάς για να υπολογίσουμε τις καταστάσεις των κελιών για την επόμενη γενιά. \newline
+
+Η δική μας προσθήκη στον κώδικα είναι η γραμμή.
+
+\begin{lstlisting}
+ #pragma omp parallel for shared (previous, current) private (i,j,nbrs)
+\end{lstlisting}
+
+
+Το συγκεκριμένο compiler directive (pragma) είναι χαρακτηριστικό του OpenMP. Είναι μια “οδηγία” προς τον μεταγλωττιστή η οποία του ζητάει να παραλληλοποιηθούν τα εσωτερικά for-loops με νήματα ορισμένα από ένα environmental variable. Στο συγκεκριμένο directive, επίσης ζητάμε:
+
+1.	Οι δείκτες previous, current να μοιράζονται μεταξύ των νημάτων. Η διάσταση Ν μοιράζεται by default.
+
+2.	Οι μεταβλητές i,j,nbrs να είναι ξεχωριστές για κάθε νήμα.
+\newline
+
+Την απόδοση του πολυνηματισμού θα εξετάσουμε με χρήση την μετρική του χρόνου, και κατά συνέπεια, του speedup $S=\frac{T_s}{T_p}$ . \newline
+
+
+\paragraph{Χρόνος Εκτέλεσης}
+\paragraph{Speedup}
+
+\paragraph{Συμπεράσματα} \hfill \break
+\underline{Για διαστάσεις 64x64}:
+
+Παρατηρούμε ότι η μείωση του χρόνου δεν είναι ακριβώς ανάλογη των αριθμών των νημάτων. Από 1 σε 2 νήματα ή από 2 σε 4 νήματα βλέπουμε σημαντική βελτίωση της απόδοσης. Η εναλλαγή από 4 σε 6 νήματα προσφέρει πολύ μικρότερη αύξηση απόδοσης. Τέλος, από 6 σε 8 νήματα παρατηρούμε \textbf{ΑΥΞΗΣΗ} του χρόνου εκτέλεσης (μηδαμινή). 
+
+Η συγκεκριμένη αύξηση οφείλεται στο overhead που υπάρχει με την χρήση πολυνηματισμού σε μια διεργασία (γέννηση νημάτων, επικοινωνία κ.λ.π.). Ο συγκεκριμένος πίνακας είναι τόσο μικρός που η παραλληλοποίησή του περαιτέρω δεν βγάζει νόημα. Αν είχαμε την δυνατότητα να εξετάσουμε μεγαλύτερο αριθμό νημάτων, πολύ πιθανό να βλέπαμε περαιτέρω αύξηση του χρόνου εκτέλεσης.\newline
+\underline{Για διαστάσεις 1024x1024}:
+
+Παρατηρούμε ότι το speedup τείνει να είναι πλήρως γραμμικό. Ο χρόνος υποδιπλασιάζεται με κάθε διπλασιασμό νημάτων. Το συγκεκριμένο ταμπλό φαίνεται ιδανικό για παραλληλοποίηση. Η επικοινωνία μεταξύ νημάτων δεν περιορίζει την απόδοσή τους.
+
 
 
 
