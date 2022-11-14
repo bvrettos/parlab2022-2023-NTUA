@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import os
 import matplotlib
 matplotlib.use('Agg')
 
@@ -43,22 +44,31 @@ for i in range(len(size_64_time)):
     speedup_64.append(Tserial_64/size_64_time[i])
     speedup_1024.append(Tserial_1024/size_1024_time[i])
     speedup_4096.append(Tserial_4096/size_4096_time[i])
+
+fp_out = open("speedup.out", 'wt')
+
+for i in range(len(speedup_64)):
+    fp_out.write(f"Speedup_64: {speedup_64[i]}\n")
+    fp_out.write(f"Speedup_1024: {speedup_1024[i]}\n")
+    fp_out.write(f"Speedup_4096: {speedup_4096[i]}\n")
+
+fp_out.close()
     
-fig, ax1 = plt.subplots()
-ax1.grid(True)
-ax1.set_xlabel("Number of Threads")
+# fig, ax1 = plt.subplots()
+# ax1.grid(True)
+# ax1.set_xlabel("Number of Threads")
 
-xAx = np.arange(len(x_Axis))
-ax1.xaxis.set_ticks(np.arange(0, len(x_Axis), 1))
-ax1.set_xticklabels(x_Axis, rotation=45)
-ax1.set_xlim(-0.5, len(x_Axis) - 0.5)
-ax1.set_ylim(min(speedup_64) - 0.05 * min(speedup_64), max(speedup_64) + 0.05 * max(speedup_64))
-ax1.set_ylabel("Speedup")
-line1 = ax1.plot(speedup_64, label="Speedup", color="red", marker='o')
+# xAx = np.arange(len(x_Axis))
+# ax1.xaxis.set_ticks(np.arange(0, len(x_Axis), 1))
+# ax1.set_xticklabels(x_Axis, rotation=45)
+# ax1.set_xlim(-0.5, len(x_Axis) - 0.5)
+# ax1.set_ylim(min(speedup_64) - 0.05 * min(speedup_64), max(speedup_64) + 0.05 * max(speedup_64))
+# ax1.set_ylabel("Speedup")
+# line1 = ax1.plot(speedup_64, label="Speedup", color="red", marker='o')
 
 
-plt.title(f"Conway's Game of Life - 1000 Steps - 64 x 64 Array")
-plt.savefig("speedup_64.png", bbox_inches="tight")
+# plt.title(f"Conway's Game of Life - 1000 Steps - 64 x 64 Array")
+# plt.savefig("speedup_64.png", bbox_inches="tight")
 
 # xAx = np.arange(len(x_Axis))
 # ax1.xaxis.set_ticks(np.arange(0, len(x_Axis), 1))
