@@ -9,7 +9,7 @@ threads = ['1','2','4','8','16','32','64']
 
 tSerial = 15.3023
 
-fp = open("kmeansData/sandman_all_combinations_naive.out")
+fp = open("kmeansData/kmeans_naive_affinity.out")
 line = fp.readline()
 
 kmeansTime = []
@@ -28,8 +28,8 @@ kmeansSpeedup = [tSerial / x for x in kmeansTime]
 
 if mode == "time":
 
-    path = "kmeans_naive_no_affinity.png"
-    title = "K-means - Naive - No Thread Affinity - Time - Size:256MB, Coords:16, Clusters:16"
+    path = "kmeans_naive_gomp_cpu_affinity.png"
+    title = "K-means - Naive - GOMP_CPU_AFFINITY - Time - Size:256MB, Coords:16, Clusters:16"
 
     f = plt.figure()
     f.set_figwidth(8)
@@ -48,8 +48,8 @@ if mode == "time":
     plt.savefig(path)
 
 elif mode == "speedup":
-    path = "kmeans_naive_no_affinity_speedup.png"
-    title = "K-means - Naive - No Thread Affinity - Speedup - Size:256MB, Coords:16, Clusters:16"
+    path = "kmeans_naive_gomp_cpu_affinity_speedup.png"
+    title = "K-means - Naive - GOMP_CPU_AFFINITY - Speedup - Size:256MB, Coords:16, Clusters:16"
 
     f= plt.figure()
     f.set_figwidth(8)
