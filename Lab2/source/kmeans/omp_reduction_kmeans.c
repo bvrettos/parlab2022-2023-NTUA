@@ -101,7 +101,13 @@ void kmeans(float * objects,          /* in: [numObjs][numCoords] */
         /* 
          * TODO: Initiliaze local cluster data to zero (separate for each thread)
          */
+        #pragma omp parallel for private(k)
+        for (k=0; k<nthreads; k++){
+            memset(local_newClusterSize[k], 0, numClusters * sizeof(newClusterSize));
+            memset(local_newClusters[k], 0, numClusters * numCoords * sizeof(newClusters));
+        }
         
+        #pragma omp parallel for 
         for (i=0; i<numObjs; i++)
         {
             // find the array index of nearest cluster center 
@@ -129,6 +135,15 @@ void kmeans(float * objects,          /* in: [numObjs][numCoords] */
          * TODO: Reduction of cluster data from local arrays to shared.
          *       This operation will be performed by one thread
          */
+        for (k=0; k<nthreads; k++){
+            for (i=0; i<numClusters; i++){
+                newClusterSize[i] += local_newClusterSize[k][i];
+
+                for (j=0; j<numCoords; j++){
+                    newClusters[i*numCoords + j] += local_newClusters[k][i*numCoords + j];
+                }
+            }
+        }
 
 
         // average the sum and replace old cluster centers with newClusters 
