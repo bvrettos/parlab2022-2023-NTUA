@@ -82,15 +82,16 @@ void FW_SR (int **A, int arow, int acol,
 			for(i=0; i<myN; i++)
 				for(j=0; j<myN; j++)
 					A[arow+i][acol+j]=min(A[arow+i][acol+j], B[brow+i][bcol+k]+C[crow+k][ccol+j]);
-	else {	
+	else {
+		
+		
 		#pragma omp parallel 
 		{
 			#pragma omp single 
 			{
 				// Task 1: FWR(A00, B00, C00)
-				#pragma omp task shared(A,B,C)
 				FW_SR(A,arow, acol,B,brow, bcol,C,crow, ccol, myN/2, bsize);
-				#pragma omp taskwait
+				
 				// Task 2: FWR(A01, B00, C01) and FWR(A10, B10, C00)
 				#pragma omp task shared(A,B,C)
 					FW_SR(A,arow, acol+myN/2,B,brow, bcol,C,crow, ccol+myN/2, myN/2, bsize);

@@ -106,7 +106,6 @@ int main(int argc, char **argv)
 
     // start the core computation
     printf("\n");
-    printf("error before running kmeans");
     kmeans(objects, numCoords, numObjs, numClusters, threshold, loop_threshold, membership, clusters);
     printf("\n");
 

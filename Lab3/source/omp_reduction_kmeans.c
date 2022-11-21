@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "kmeans.h"
-#include <string.h>
 /*
  * TODO: include openmp header file
  */ 
-#include <omp.h>
+
 // square of Euclid distance between two multi-dimensional points
 inline static float euclid_dist_2(int    numdims,  /* no. dimensions */
                                  float * coord1,   /* [numdims] */
@@ -68,7 +67,6 @@ void kmeans(float * objects,          /* in: [numObjs][numCoords] */
     for (i=0; i<numObjs; i++)
         membership[i] = -1;
 
-    
     // initialize newClusterSize and newClusters to all 0 
     newClusterSize = (typeof(newClusterSize)) calloc(numClusters, sizeof(*newClusterSize));
     newClusters = (typeof(newClusters))  calloc(numClusters * numCoords, sizeof(*newClusters));
@@ -82,11 +80,9 @@ void kmeans(float * objects,          /* in: [numObjs][numCoords] */
      * This is noticed when numCoords is low (and neighboring local_newClusters exist close to each other).
      * Allocate local cluster data with a "first-touch" policy.
      */
-
     // Initialize local (per-thread) arrays (and later collect result on global arrays)
-    #pragma omp parallel private(k)
+    for (k=0; k<nthreads; k++)
     {
-        k = omp_get_thread_num();
         local_newClusterSize[k] = (typeof(*local_newClusterSize)) calloc(numClusters, sizeof(**local_newClusterSize));
         local_newClusters[k] = (typeof(*local_newClusters)) calloc(numClusters * numCoords, sizeof(**local_newClusters));
     }
@@ -105,15 +101,7 @@ void kmeans(float * objects,          /* in: [numObjs][numCoords] */
         /* 
          * TODO: Initiliaze local cluster data to zero (separate for each thread)
          */
-
-         #pragma omp parallel default(shared) private(k)
-         {
-            k = omp_get_thread_num();
-            memset(local_newClusterSize[k], 0, numClusters * sizeof(float));
-            memset(local_newClusters[k], 0, numClusters * numCoords * sizeof(float));
-         }
-
-        #pragma omp parallel for private(index, i, j, k)
+        
         for (i=0; i<numObjs; i++)
         {
             // find the array index of nearest cluster center 
@@ -131,33 +119,23 @@ void kmeans(float * objects,          /* in: [numObjs][numCoords] */
              * TODO: Collect cluster data in local arrays (local to each thread)
              *       Replace global arrays with local per-thread
              */
-            
-            k = omp_get_thread_num();
-            local_newClusterSize[k][index]++;
-
+            newClusterSize[index]++;
             for (j=0; j<numCoords; j++)
-                local_newClusters[k][index*numCoords + j] += objects[i*numCoords + j];
+                newClusters[index*numCoords + j] += objects[i*numCoords + j];
+
         }
 
         /*
          * TODO: Reduction of cluster data from local arrays to shared.
          *       This operation will be performed by one thread
          */
-         
-        for (k=0; k<nthreads; k++){
-            for (i=0; i<numClusters; i++){
-                newClusterSize[i] += local_newClusterSize[k][i];
 
-                for (j=0; j<numCoords; j++) {
-                    newClusters[i*numCoords + j] += local_newClusters[k][i*numCoords + j];
-                }
-            }
-        }
 
-        for (i=0; i<numClusters; i++){
-            for (j=0; j<numCoords; j++){
-                  if (newClusterSize[i] > 0)
-                    clusters[i*numCoords + j] = newClusters[i*numCoords + j] / newClusterSize[i];             
+        // average the sum and replace old cluster centers with newClusters 
+        for (i=0; i<numClusters; i++) {
+            for (j=0; j<numCoords; j++) {
+                if (newClusterSize[i] > 1)
+                    clusters[i*numCoords + j] = newClusters[i*numCoords + j] / newClusterSize[i];
             }
         }
             

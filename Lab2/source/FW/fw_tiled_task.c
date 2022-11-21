@@ -44,7 +44,6 @@ int main(int argc, char **argv)
 	gettimeofday(&t1,0);
 
 
-	// This Time Period for loop can not be parallelized
 	for(k=0;k<N;k+=B){
 		// Compute the Akk tile
 		FW(A,k,k,k,B);
@@ -70,6 +69,7 @@ int main(int argc, char **argv)
 						FW(A,k,k,j,B);
 			}
 		}
+
 
 		#pragma omp parallel
 		{

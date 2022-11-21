@@ -164,7 +164,8 @@ for ( t = 0 ; t < T ; t++ ) {
 \section{Άσκηση 2 - Παραλληλοποίηση και βελτιστοποίηση αλγορίθμων σε αρχιτεκτονικές κοινής μνήμης}
 
 Στην συγκεκριμένη άσκηση, σκοπός είναι η παραλληλοποίηση 2 διαφορετικών εκδόσεων των αλγορίθμων K-means και Floyd-Warshall.
-% Συμπλήρωσε πραγματα...
+Χρησιμοποιούμε πιο "εξειδικευμένες" τεχνικές στο OpenMP και για πρώτη φορά συναντάμε και την ιδέα του task based parallelism.
+
 
 \subsection{Αλγόριθμος K-means}
 
@@ -190,7 +191,7 @@ master thread με τα δικα του αποτελέσματα (reduction).
 
 Τα κλειδώματα για την ανανέωση των μεταλητών έγινε με την χρήση του \textbf{atomic} pragma.
 
-Το πρόγραμμα λήγει για συγκεκριμένα iterations ή μέχρι να συγκλίνει. Τα παρακάτω δεδομένα είναι για τον συνδυασμό
+Το πρόγραμμα λήγει για δοσμένα iterations ή μέχρι να συγκλίνει. Τα παρακάτω δεδομένα είναι για τον συνδυασμό
 \{Size, Coords, Clusters, Loops\} = \{256, 16, 16, 10\}.
 
 \begin{lstlisting}
@@ -231,18 +232,152 @@ master thread με τα δικα του αποτελέσματα (reduction).
 
 Το άμεσο συμπέρασμα είναι ότι το πρόγραμμα δεν βελτιώνεται με χρήση παραπάνω νημάτων. Συγκεκριμένα, 
 η αύξηση των διαθέσιμων νημάτων αυξάνει τον χρόνο εκτέλεσης. 
-% Προσθεσε συμπερασματα
+
+Η ύπαρξη κλειδωμάτων και η συχνή αλλαγή διαμοιραζόμενων μεταβλητών σημαίνει ότι χάνεται πολύς χρόνος σε
+συγχρονισμό και σε θέματα συνάφειας μνήμης. 
 
 Σαν προσπάθεια να βελτιώσουμε τα αποτελέσματα, χρησιμοποιήσαμε την μεταβλητή περιβάλλοντος GOMP\_CPU\_AFFINITY.
 Η λειτουργία αυτής της μεταβλήτης είναι ότι προσδένει τα "λογικά" νήματα σε hardware νήματα των επεξεργαστών βάσει μιας ακολουθίας.
 Γνωρίζοντας ότι οι επεξεργαστές του Sandman θεωρούν ότι π.χ. στο Physical Core 0 υπάρχουν τα Logical Cores (0,32),
 επιλέξαμε τα νήματα να προσδένονται ακολουθιακά στους φυσικούς πυρήνες των επεξεργαστών.
 
-Παρατηρήσαμε βελτίωση των χρόνων για τα πρώτα 32 νήματα. Φυσικό ήταν να μην βελτιωθεί η κατάσταση για τα 64 νήματα.
-% Πες κιαλα
+Παρατηρήσαμε βελτίωση των χρόνων για τα πρώτα 32 νήματα. Μετά από αυτό το σημείο, τα πλέον καινούργια νήματα
+θα προσδένονται στα logical cores (Hyperthreading) και δεν θα δούμε κάποια μείωση χρόνου εκτέλεσης.
+Προσδένοντας νήματα σε συγκεκριμένους πυρήνες αποτρέπει το Λειτουργικό Σύστημα από το να αλλάζει θέση τα νήματα (λόγω χρονοδρομολόγησης)
+και να απαιτείται μεταφορά cache lines από πυρήνα σε πυρήνα.
 
+Το thread affinity εξασφαλίζει τα νήματα να βρίσκονται όσο πιο κοντά γίνεται στα δεδομένα που επεξεργάζονται. Πραγματοποιούν
+μια πιο "NUMA Aware" εκτέλεση του προγράμματος. Οι συγκεκριμένες βελτιστοποιήσεις είναι low level στην φύση τους και αλλάζει η 
+τακτική που πρέπει να ακολουθήσουμε αναλόγως το πρόβλημα. Στην συγκεκριμένη υλοποίηση, είδαμε βέλτιστη απόδοση έχοντας πάντα νήματα
+στα πιο κοντινά NUMA nodes μεταξύ τους. 
 
 \subsubsection{K-means - Copied Clusters and Reduce}
+
+Η έκδοση αυτή καταργεί το πρόβλημα των κλειδωμάτων και των διαμοιραζόμενων δεδομένων. Έχοντας δει τα πλεονεκτήματα
+του thread affinity στην προηγούμενη έκδοση, συνεχίζουμε την εφαρμογή του και εδώ.
+
+Αρχικά παρουσιάζονται τα δεδομένα από την εκτέλεση έχοντας αγνοήσει τα tips για την αποφυγή του false-sharing.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{/kmeansReductionPlots/kmeans_reduction_nofs.png}
+    \includegraphics[scale=0.4]{/kmeansReductionPlots/kmeans_reduction_nofs_speedup.png}
+    \caption{Γραφήματα K-Means Reduction - Simple}
+    \label{fig:Γραφήματα K-Means Reduction - Simple}
+\end{figure}
+
+Η συγκεκριμένη έκδοση επιτυγχάνει πολύ καλύτερη επίδοση από την Shared Cluster. Χάνεται το μεγάλο overhead του συγχρονισμού
+που είχε η προηγούμενη. Το κυριότερο μειονέκτημα όμως είναι η μεγαλύτερη ανάγκη από μνήμη αφού δουλεόυμε με
+copied δεδομένα. Η ανάγκη για μνήμη είναι πολλαπλάσια της αρχικής έκδοσης, αναλόγως τα πόσα νήματα χρησιμοποιούμε. Για
+μεγαλύτερα προβλήματα μπορεί να ήταν και απαγορευτική η χρήση πολλών νημάτων. 
+
+Εξετάζοντας τα γραφηματα, παρατηρούμε σχεδόν γραμμικό speedup. Άρα, η έκδοση αυτή έχει πολύ ικανή δυνατότητα για παραλληλοποίηση.
+
+Προχωράμε σε επόμενο configuartion, \{Size, Coords, Clusters, Loops\} = \{256, 1, 4, 10\}. Πλέον αναφερόμαστε σε αυτό το 
+configuration ως "Hard".
+\vspace{4pt}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{/kmeansReductionPlots/kmeans_reduction_hard_nofs.png}
+    \includegraphics[scale=0.4]{/kmeansReductionPlots/kmeans_reduction_hard_nofs_speedup.png}
+    \caption{Γραφήματα K-Means Reduction - Hard}
+    \label{fig:Γραφήματα K-Means Reduction - Hard}
+\end{figure}
+
+To configuartion αυτό έχει πολλά περισσότερα δεδομένα και μεγαλύτερο πίνακα objects, ο οποίος διαβάζεται από όλα τα νήματα.
+Αν 2 ή παραπάνω νήματα επεξεργζάονται \textbf{ΔΙΑΦΟΡΕΤΙΚΑ} δεδομένα στην ίδια Cache Line τότε έχουμε φαινόμενο false sharing.
+
+Πλέον, πρέπει να βρούμε πιο έξυπνη λύση για να αποφύγουμε τέτοια προβλήματα. Τα Linux λειτουργούν με κάτι που ονομάζεται
+\textbf{First Touch Placement Policy}. Δηλαδή, όταν ένα νήμα καταχωρεί μνήμη (και αρχικοποιεί), η θέση αυτής της μνήμης θα είναι όσο πιο κοντά στο νήμα γίνεται.
+Η πολιτική αυτή είναι ορθότατη για σειριακές εφαρμογές.
+
+Στην δική μας υλοποίηση, η καταχώρηση της μνήμης γίνόταν από ένα νήμα, πριν μπούμε σε παράλληλη περιοχή. Για να γίνει το πρόβλημα
+περισσότερο \textbf{Operating System Aware}, καταχωρούμε την μνήμη πλέον ανά νήμα.
+
+\begin{lstlisting}
+    #pragma omp parallel private(k)
+    {
+        k = omp_get_thread_num();
+        local_newClusterSize[k] = (typeof(*local_newClusterSize)) calloc(numClusters, sizeof(**local_newClusterSize));
+        local_newClusters[k] = (typeof(*local_newClusters)) calloc(numClusters * numCoords, sizeof(**local_newClusters));
+    }
+    /*
+    *
+    */
+    #pragma omp parallel default(shared) private(k)
+    {
+        k = omp_get_thread_num();
+        memset(local_newClusterSize[k], 0, numClusters * sizeof(float));
+        memset(local_newClusters[k], 0, numClusters * numCoords * sizeof(float));
+    }
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.38]{/kmeansReductionPlots/kmeans_reduction_hard_fs.png}
+    \includegraphics[scale=0.38]{/kmeansReductionPlots/kmeans_reduction_hard_fs_speedup.png}
+    \caption{Γραφήματα K-Means Reduction - Hard - False Sharing Aware}
+    \label{fig:Γραφήματα K-Means Reduction - Hard - False Sharing Aware}
+\end{figure}
+
+Βελτιώνοντας την τοπικότητα των δεδομένων στα εκάστοτε νήματα λύνει κάποια από τα προβλήματα του false sharing για το 
+συγκεκριμένο πρόβλημα, αλλά τα αποτελέσματα δεν θεωρούνται ικανοποιητικά. 
+Συγκριτικά με πριν, τα αποτελέσματα είναι αρκετά καλύτερα, καθώς βλέπουμε βελτίωση με αύξηση των νημάτων σε αντίθεση με πριν.
+Χρειάζεται όμως περισσότερη παρέμβαση από εμάς για να βελτιωθεί ο χρόνος.
+
+Ο καλύτερος χρόνος που καταφέρνουμε είναι 4.9294s για 16 νήματα. Παραπάνω από 16 νήματα, παρατηρούμε χειροτέρευση
+της απόδοσης.
+
+Η παρέμβαση αυτή θα γίνει κάνοντας ακόμα καλύτερα καταχώρηση των δεδομένων στα νήματα. Ο πίνακας objects είναι κρίσιμο μέρος
+του προβλήματος αφού γίνεται ανάγνωση μέρους αυτού, ξεχωριστό από όλα τα νήματα. Έχουμε ήδη λύσει το πρόβλημα με την τοπικότητα
+των local πινάκων.
+
+Η τελευταία βελτιστοποίηση είναι η αρχικοποίηση του πίνακα objects ακριβώς με τον ίδιο τρόπο που έγινε και η αρχικοποίηση των
+τοπικών πινάκων, δηλαδή σε παράλληλη περιοχή, ανά νήμα.
+
+\begin{lstlisting}
+    #pragma omp parallel for private(i, j)
+    for (i=0; i<numObjs; i++)
+    {
+        unsigned int seed = i;
+        for (j=0; j<numCoords; j++)
+        {
+            objects[i*numCoords + j] = (rand_r(&seed) / ((float) RAND_MAX)) * val_range;
+            if (_debug && i == 0)
+                printf("object[i=%ld][j=%ld]=%f\n",i,j,objects[i*numCoords + j]);
+        }
+    } 
+\end{lstlisting}
+Το κάθε νήμα θα κάνει αρχικοποίηση του slice του οποίου τα δεδομένα θα επεξεργαστεί αργότερα.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{/kmeansReductionPlots/kmeans_reduction_hard_numa.png}
+    \includegraphics[scale=0.4]{/kmeansReductionPlots/kmeans_reduction_hard_numa_speedup.png}
+    \caption{Γραφήματα K-Means Reduction - Hard - NUMA Aware}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{/kmeansReductionPlots/kmeans_reduction_numa.png}
+    \includegraphics[scale=0.4]{/kmeansReductionPlots/kmeans_reduction_numa_speedup.png}
+    \caption{Γραφήματα K-Means Reduction - NUMA Aware}
+    \label{fig:Γραφήματα K-Means Reduction - NUMA Aware}
+\end{figure}
+
+Η βελτίωση που υπέστει η "δύσκολη" περίπτωση είναι μικρή αλλά αξιοσημείωτη. Στο συγκεκριμένο σύστημα,
+δεν υπάρχει λόγος να χρησιμοποιήσουμε πάνω από 16 νήματα για την εκτέλεση του προγράμματος.
+Η πιο εύκολη περίπτωση ευνοήθηκε περισσότερο από τις αλλαγές, ειδικά για μικρότερο αριθμό νημάτων. Πάλι όμως,
+βγαινουμε στο συμπέρασμα ότι δεν υπάρχει λόγος να χρησιμοποιηθούν πάνω από 8 ή 16 νήματα γιατί η διαφορά στον χρόνο
+είναι μηδαμινή. 
+
+\subsubsection*{Best Times - Reduction}
+
+\{Size, Coords, Clusters, Loops\} = \{256, 1, 4, 10\}: 4.4818s - 16 Threads
+\newline
+\{Size, Coords, Clusters, Loops\} = \{256, 16, 16, 10\}: 1.6809s - 64 Threads
+\newline
 
 \subsection{Αλγόριθμος Floyd-Warshall}
 
@@ -270,18 +405,18 @@ master thread με τα δικα του αποτελέσματα (reduction).
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.4]{/fwStandardPlots/fw_standard_1024.png}
-    \includegraphics[scale=0.4]{/fwStandardPlots/fw_standard_2048.png}
-    \includegraphics[scale=0.4]{/fwStandardPlots/fw_standard_4096.png}
+    \includegraphics[scale=0.35]{/fwStandardPlots/fw_standard_1024.png}
+    \includegraphics[scale=0.35]{/fwStandardPlots/fw_standard_2048.png}
+    \includegraphics[scale=0.35]{/fwStandardPlots/fw_standard_4096.png}
     \caption{Χρόνος Εκτέλεσης FW Standard}
     \label{fig:Χρόνος Εκτέλεσης FW Standard}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.50]{/fwStandardPlots/fw_speedup1024.png}
-    \includegraphics[scale=0.50]{/fwStandardPlots/fw_speedup2048.png}
-    \includegraphics[scale=0.50]{/fwStandardPlots/fw_speedup4096.png}
+    \includegraphics[scale=0.40]{/fwStandardPlots/fw_speedup1024.png}
+    \includegraphics[scale=0.40]{/fwStandardPlots/fw_speedup2048.png}
+    \includegraphics[scale=0.40]{/fwStandardPlots/fw_speedup4096.png}
     \caption{Speedup FW Standard}
     \label{fig:Speedup FW Standard}
 \end{figure}
@@ -309,6 +444,39 @@ Size 4096: 18.4082s - 16 Threads
 μεγέθους, επιλεγμένο από εμας, βολικό για τον επεξεργαστή. Το μέγεθος αυτό ονομάζουμε block size. Δηλαδή, προσπαθούμε να χωρέσουμε ολόκληρο τον
 πίνακα στην cache. Παρακάτω παρουσιάζουμε το task graph της συνάρτησης αυτής για την πρώτη φορά που καλείται.
 
+\begin{lstlisting}
+    // Task 1: FWR(A00, B00, C00)
+    FW_SR(A,arow, acol,B,brow, bcol,C,crow, ccol, myN/2, bsize);
+    
+    // Task 2: FWR(A01, B00, C01) and FWR(A10, B10, C00)
+    #pragma omp task shared(A,B,C)
+        FW_SR(A,arow, acol+myN/2,B,brow, bcol,C,crow, ccol+myN/2, myN/2, bsize);
+    #pragma omp task shared(A,B,C)
+        FW_SR(A,arow+myN/2, acol,B,brow+myN/2, bcol,C,crow, ccol, myN/2, bsize);
+    #pragma omp taskwait
+    
+    // Task 3: FWR(A11, B10, C01)
+    #pragma omp task shared(A,B,C)
+        FW_SR(A,arow+myN/2, acol+myN/2,B,brow+myN/2, bcol,C,crow, ccol+myN/2, myN/2, bsize);
+    #pragma omp taskwait
+
+    // Task 4: FWR(A11, B10, C01)
+    #pragma omp task shared(A,B,C)
+        FW_SR(A,arow+myN/2, acol+myN/2,B,brow+myN/2, bcol+myN/2,C,crow+myN/2, ccol+myN/2, myN/2, bsize);
+    #pragma omp taskwait
+
+    // Task 5: FWR(A10, B10, C00) and FWR(A01, B00, C01)
+    #pragma omp task shared(A,B,C)
+        FW_SR(A,arow+myN/2, acol,B,brow+myN/2, bcol+myN/2,C,crow+myN/2, ccol, myN/2, bsize);
+    #pragma omp task shared(A,B,C)	
+        FW_SR(A,arow, acol+myN/2,B,brow, bcol+myN/2,C,crow+myN/2, ccol+myN/2, myN/2, bsize);
+    #pragma omp taskwait
+
+    // Task 6: FWR(A00, B00, C00)
+    FW_SR(A,arow, acol,B,brow, bcol+myN/2,C,crow+myN/2, ccol, myN/2, bsize);
+\end{lstlisting}
+
+
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.25]{/taskgraph.png}
@@ -317,11 +485,7 @@ Size 4096: 18.4082s - 16 Threads
 \end{figure}
 
 Η παραλληλοποίηση αυτής της έκδοσης γίνεται με χρήση task, ώστε να μπορεί να είναι αναδρομική.
-Η OpenMP προσφέρει αυτή την δυνατότητα με την χρήση του
 
-\begin{lstlisting}
-#pragma omp task
-\end{lstlisting}
 
 \begin{figure}[H]
     \centering
@@ -394,15 +558,15 @@ Size 4096: 26.4761s - 2 Threads - Block Size 128
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.45\linewidth}
-        \includegraphics[scale=0.42]{/fwTaskNestedPlots/fw_tasks_1024.png}
+        \includegraphics[scale=0.38]{/fwTaskNestedPlots/fw_tasks_1024.png}
         \caption{FW Recursive + Nested Size 1024}
     \end{subfigure}
     \begin{subfigure}[b]{0.45\linewidth}
-        \includegraphics[scale=0.42]{/fwTaskNestedPlots/fw_tasks_2048.png}
+        \includegraphics[scale=0.38]{/fwTaskNestedPlots/fw_tasks_2048.png}
         \caption{FW Recursive + Nested Size 2048}
     \end{subfigure}
     \begin{subfigure}[b]{0.5\linewidth}
-        \includegraphics[scale=0.42]{/fwTaskNestedPlots/fw_tasks_4096.png}
+        \includegraphics[scale=0.38]{/fwTaskNestedPlots/fw_tasks_4096.png}
         \caption{FW Recursive + Nested Size 4096}
     \end{subfigure}
     \caption{Χρόνος Εκτέλεσης FW Recursive/Nested}

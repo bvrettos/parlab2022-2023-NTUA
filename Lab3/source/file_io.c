@@ -6,7 +6,7 @@
 #include <fcntl.h>
 #include <unistd.h>     /* read(), close() */
 // TODO: remove comment from following line
-#include <omp.h>
+// #include <omp.h>
 
 #include "kmeans.h"
 
@@ -26,7 +26,6 @@ float * dataset_generation(int numObjs, int numCoords)
      *        reminder : First-touch data placement policy
      */
 
-    #pragma omp parallel for private(i, j)
     for (i=0; i<numObjs; i++)
     {
         unsigned int seed = i;
