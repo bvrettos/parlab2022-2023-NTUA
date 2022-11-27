@@ -27,13 +27,14 @@ def logger(filename:str) -> list:
 
 def parser() -> str:
     parser = argparse.ArgumentParser(description = "Kmeans Lock Plotter")
-    parser.add_argument('--locktype', help = 'Select Locktype', type = str, choices = ['no_lock', 'mutex', 'spinlock', 'tas', 'ttas', 'array', 'clh', 'all'], required=True)
+    parser.add_argument('--locktype', help = 'Select Locktype', type = str, choices = ['nosync', 'mutex', 'spinlock', 'tas', 'ttas', 'array', 'clh', 'all', 'critical', 'atomic'], required=True)
     parser.add_argument('--outfile', help = 'Kmeans outfile path (relative to script)', type = str, required=True)
+    parser.add_argument('--affinity', type = str, default="")
     namespace = parser.parse_args()
 
     return namespace
 
-def timePlotter(outFilePath:str, plotTitle:str, timeList, color:str):
+def timePlotter(outFilePath:str, title:str, timeList, color:str):
     threads = ['1','2','4','8','16','32','64']
 
     f = plt.figure()
@@ -48,10 +49,10 @@ def timePlotter(outFilePath:str, plotTitle:str, timeList, color:str):
     plt.xticks(X_axis, threads)
     plt.xlabel("Number of Threads")
     plt.ylabel("Time (in seconds)")
-    plt.title(plotTitle)
+    plt.title(title)
     plt.savefig(outFilePath)
     
-def speedupPlotter(outFilePath:str, plotTitle:str, speedupList, color:str):
+def speedupPlotter(outFilePath:str, title:str, speedupList, color:str):
     threads = ['1','2','4','8','16','32','64']
 
     f = plt.figure()
@@ -61,47 +62,41 @@ def speedupPlotter(outFilePath:str, plotTitle:str, speedupList, color:str):
 
     X_axis = np.arange(len(threads))
 
-    plt.bar(X_axis, speedupList, 0.3, color=color)
+    plt.plot(X_axis, speedupList, 0.3, color=color, marker='o')
 
     plt.xticks(X_axis, threads)
     plt.xlabel("Number of Threads")
     plt.ylabel("Speedup")
-    plt.title(plotTitle)
+    plt.title(title)
     plt.savefig(outFilePath)
 
 def main():
     # Parse arguments
     namespace = parser()
     lock = namespace.locktype
+    affinity = namespace.affinity
 
     # Switch-Case (Python gamiesai)
-    if lock == 'no_lock':
-        color = "red"
-        timeTitle = "test"
-        speedupTitle = "test2"
-        timePlotPath = "path"
-        speedupPlotPath = "test2"
-    elif lock == 'mutex':
-        pass
-    elif lock == 'spinlock':
-        pass
-    elif lock == 'tas':
-        pass
-    elif lock == 'ttas':
-        pass
-    elif lock == 'array':
-        pass
-    elif lock == 'clh':
-        pass
-    elif lock == 'all':
-        pass
+    folder = f"plots{affinity}"
+    timePlotPath = f"{folder}/kmeans_locks_{lock}.jpg"
+    speedupPlotPath = f"{folder}/kmeans_locks_{lock}_speedup.jpg"
     
+    if ((lock == 'critical') or (lock == 'atomic')):
+        timeTitle = f"K-Means - OMP {lock} - Size:16MB, Coords:16, Clusters:16"
+        speedupTitle = f"K-Means - OMP {lock} - Speedup - Size:16MB, Coords:16, Clusters:16"
+
+    timeTitle = f"K-Means - {lock} Lock - Size:16MB, Coords:16, Clusters:16"
+    speedupTitle = f"K-Means - {lock} Lock - Speedup - Size:16MB, Coords:16, Clusters:16"
+
+    color = "red"
     # Log Data from Outfiles
     timeList, speedupList = logger(namespace.outfile)
 
     # Plot and Save
-    timePlotter(outFilePath=timePlotPath, title=timeTitle, timeList=timeList, color=color)
+    print(timeList, speedupList)
     speedupPlotter(outFilePath=speedupPlotPath, title=speedupTitle, speedupList=speedupList, color=color)
+
+    timePlotter(outFilePath=timePlotPath, title=timeTitle, timeList=timeList, color=color)
 
 
 if __name__ == "__main__":
