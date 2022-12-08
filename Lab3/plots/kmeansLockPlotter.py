@@ -58,7 +58,7 @@ def plotMultiple(outFilePath:str, title:str, inputList, color:list[str], yTitle:
     elif mode == 'Speedup':
         cnt = 0.05
         for idx, i in enumerate(inputList):
-            plt.plot(X_axis + cnt, i, 0.1, marker='o', label=legend[idx], color=color[idx])
+            plt.plot(X_axis + cnt, i, marker='o', label=legend[idx], color=color[idx])
         plt.xticks(X_axis + 0.3, threads)
         plt.xlabel("Number of Threads")
         plt.ylabel(yTitle)
