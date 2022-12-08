@@ -1,0 +1,77 @@
+\documentclass[letterpaper,12pt]{article}
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{subfiles}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\usepackage{tabularx} % extra features for tabular environment
+\usepackage{amsmath}  % improve math presentation
+\usepackage{graphicx} % takes care of graphic including machinery
+\usepackage[margin=1in,letterpaper]{geometry} % decreases margins
+\usepackage{cite} % takes care of citations
+\usepackage[final]{hyperref} % adds hyper links inside the generated pdf file
+\hypersetup{
+	colorlinks=true,       % false: boxed links; true: colored links
+	linkcolor=blue,        % color of internal links
+	citecolor=blue,        % color of links to bibliography
+	filecolor=magenta,     % color of file links
+	urlcolor=blue         
+}
+%\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[greek,english]{babel}
+\usepackage{alphabeta}
+
+
+\graphicspath{}
+\begin{document}
+
+% O Tsafos pe8ane :( Gia panta VhtaPeis
+\title{Συστήματα Παράλληλης Επεξεργασίας}
+\author{Ομάδα 6 \\
+Βασίλειος Βρεττός - el18126, \\
+Ανδρέας Βατίστας - el18020 \\}
+\date{Σχολή Ηλεκτρολόγων Μηχανικών και Μηχανικών Υπολογιστών, Εθνικό Μετσόβιο Πολυτεχνείο}
+\maketitle
+
+% Lab 1
+\section{Άσκηση 1 - Εξοικείωση με το περιβάλλον προγραμματισμού}
+\subfile{lab_reports/lab1.tex}
+
+% Lab 2
+\section{Άσκηση 2 - Παραλληλοποίηση και βελτιστοποίηση αλγορίθμων σε αρχιτεκτονικές κοινής μνήμης}
+\subfile{lab_reports/lab2.tex}
+
+% Lab 3
+\section{Άσκηση 3 - Αμοιβαίος Αποκλεισμός/Κλειδώματα}
+\subfile{lab_reports/lab3.tex}
+
+% Lab 4
+\section{Άσκηση 4 - Ταυτόχρονες Δομές Δεδομένων}
+\subfile{lab_reports/lab4.tex}
+
+\end{document}
