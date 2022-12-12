@@ -6,7 +6,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-def logger(filename:str) -> list[float]:
+def logger(filename:str):
     kmeansTime = []
     kmeansSpeedup = []
     
@@ -20,6 +20,7 @@ def logger(filename:str) -> list[float]:
         line = fp.readline()
 
     fp.close()
+    # tSerial = 0.8780
     tSerial = kmeansTime[0]
     kmeansSpeedup = [tSerial / x for x in kmeansTime]
 
@@ -33,9 +34,9 @@ def parser() -> str:
 
     return namespace
 
-def plotMultiple(outFilePath:str, title:str, inputList, color:list[str], yTitle:str, mode:str):
+def plotMultiple(outFilePath:str, title:str, inputList, color, yTitle:str, mode:str):
     threads = ['1','2','4','8','16','32','64']
-    legend = ['No Sync', 'PThread-Mutex', 'PThread-Spinlock', 'TAS', 'TTAS', 'Array', 'CLH']
+    legend = ['No Sync', 'PThread-Mutex', 'PThread-Spinlock', 'TAS', 'TTAS', 'Array', 'CLH', 'OMP Critical', 'OMP Atomic']
 
     f = plt.figure()
     f.set_figwidth(8)
@@ -67,7 +68,7 @@ def plotMultiple(outFilePath:str, title:str, inputList, color:list[str], yTitle:
         plt.savefig(outFilePath)
 
 
-def timePlotter(outFilePath:str, title:str, timeList, color:str) -> list[float]:
+def timePlotter(outFilePath:str, title:str, timeList, color:str):
     threads = ['1','2','4','8','16','32','64']
 
     f = plt.figure()
@@ -85,7 +86,7 @@ def timePlotter(outFilePath:str, title:str, timeList, color:str) -> list[float]:
     plt.title(title)
     plt.savefig(outFilePath)
     
-def speedupPlotter(outFilePath:str, title:str, speedupList, color:str) -> list[float]:
+def speedupPlotter(outFilePath:str, title:str, speedupList, color:str):
     threads = ['1','2','4','8','16','32','64']
 
     f = plt.figure()
@@ -95,7 +96,7 @@ def speedupPlotter(outFilePath:str, title:str, speedupList, color:str) -> list[f
 
     X_axis = np.arange(len(threads))
 
-    plt.plot(X_axis, speedupList, 0.3, color=color, marker='o')
+    plt.plot(X_axis, speedupList, color=color, marker='o')
 
     plt.xticks(X_axis, threads)
     plt.xlabel("Number of Threads")
@@ -112,16 +113,13 @@ def main():
     Path(plotFolder).mkdir(parents=True, exist_ok=True)
 
     # Choice Arrays
-    locks = ['No Lock', 'Mutex', 'Spinlock', 'TAS', 'TTAS', 'Array', 'CLH']
-    colors = ['red', 'green', 'purple', 'darkred', 'blue', 'orange', 'darkblue']
-    lockFiles = ['nosync', 'pthread_mutex', 'pthread_spin', 'tas', 'ttas', 'array', 'clh']
+    locks = ['No Lock', 'Mutex', 'Spinlock', 'TAS', 'TTAS', 'Array', 'CLH', 'OMP Critical', 'OMP Atomic']
+    colors = ['red', 'green', 'purple', 'darkred', 'blue', 'orange', 'darkblue', 'black', 'darkgreen']
+    lockFiles = ['nosync', 'pthread_mutex', 'pthread_spin', 'tas', 'ttas', 'array', 'clh', 'critical', 'atomic']
     
 
-    if ((lock == 'critical') or (lock == 'atomic')):
-        color = 'black'
-        timeTitle = f"K-Means - OMP {lock} - Size:16MB, Coords:16, Clusters:16"
-        speedupTitle = f"K-Means - OMP {lock} - Speedup - Size:16MB, Coords:16, Clusters:16"
-    elif lock == "all":
+    
+    if lock == "all":
         index = 0
         allTimeList = []
         allSpeedupList = []
@@ -145,6 +143,7 @@ def main():
             timePlotter(outFilePath=timePlotPath, title=timeTitle, timeList=timeList, color=color)
         plotMultiple(f"{plotFolder}/kmeans_locks_all.jpg", allTimeTitle, allTimeList, colors, "Time (in seconds)", mode='Time')
         plotMultiple(f"{plotFolder}/kmeans_locks_all_speedup.jpg", allSpeedupTitle, allSpeedupList, colors, "Speedup", mode='Speedup')
+    
 
     else:
         lockIndex = lockFiles.index(lock)
@@ -155,10 +154,15 @@ def main():
         timePlotPath = f"{plotFolder}/kmeans_locks_{lock}.jpg"
         speedupPlotPath = f"{plotFolder}/kmeans_locks_{lock}_speedup.jpg"
         # Titles for Plots
-        timeTitle = f"K-Means - {locks[lockIndex]} Lock - Size:16MB, Coords:16, Clusters:16"
-        speedupTitle = f"K-Means - {lock[lockIndex]} Lock - Speedup - Size:16MB, Coords:16, Clusters:16"
+        if ((lock == 'critical') or (lock == 'atomic')):
+            color = 'black'
+            timeTitle = f"K-Means - OMP {lock} - Size:16MB, Coords:16, Clusters:16"
+            speedupTitle = f"K-Means - OMP {lock} - Speedup - Size:16MB, Coords:16, Clusters:16"
+        else:
+            timeTitle = f"K-Means - {locks[lockIndex]} Lock - Size:16MB, Coords:16, Clusters:16"
+            speedupTitle = f"K-Means - {lock[lockIndex]} Lock - Speedup - Size:16MB, Coords:16, Clusters:16"
         # Color
-        color = colors[lockIndex]
+            color = colors[lockIndex]
         print(timeList, speedupList)
 
         speedupPlotter(outFilePath=speedupPlotPath, title=speedupTitle, speedupList=speedupList, color=color)

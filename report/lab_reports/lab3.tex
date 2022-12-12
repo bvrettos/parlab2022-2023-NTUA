@@ -3,7 +3,6 @@
 \graphicspath{{../../Lab3/plots/}}
 \begin{document}
 
-
 Σε αυτή την άσκηση, επιστρέφουμε πίσω στην ανάλυση της παραλληλοποίησης του αλγορίθμου K-means. Στην naive 
 έκδοση, υπάρχει το ζήτημα της ανανέωσης των μεταβλητών newClusters και newClustersSize, οι οποίες δείχνουν
 τις μεταβολές των κέντρων των Cluster και το μέγεθος αυτών. Εφόσον λειτουργούμε με διαμοιραζόμενα δεδομένα,
@@ -263,20 +262,83 @@ spin στις τοπικές θέσεις τους, μειώνοντας έτσ�
 \subsubsection*{Best Time - CLH Lock}
 0.4768s - 4 Threads
 
+\subsection{Mutual Exclusion με χρήση critical/atomic pragma}
+
+Το \textbf{\#pragma omp critical} δηλώνει ότι η παρακάτω περιοχή θα πρέπει να εκτελείται από ένα μόνο νήμα κάθε φορά. Δηλαδή,
+εφαρμόζεται mutual exclusion για αυτή την περιοχή. Προσφέρει μια πολύ ευκολότερη λύση για τον προγραμματιστή στο να εφαρμόσει
+mutual exclusion όμως δεν προσφέρει έλεγχο για τον τύπο του κλειδώματος.
+
+Το OpenMP επιλέγει (συνήθως) από μόνο του τι είδους κλείδωμα να χρησιμοποιήσει. Υπάρχει και η επιλογή ο προγραμματιστής
+να δώσει ένα "hint" στο directive αν γνωρίζει από πριν την συμπεριφορά των νημάτων. Τα hints είναι τα εξής:
+
+\begin{description}
+    \item [Uncontended:] Αν περιμένουμε λίγα νήματα να προσπαθήσουν ταυτόχρονα να αποκτήσουν το lock.
+    \item [Contented:] Αν περιμένουμε πολλά νήματα να προσπαθήσουν ταυτόχρονα να αποκτήσουν το lock.
+    \item [Speculative:] Ο προγραμματιστής προτείνει να χρησιμοποιηθούν τεχνικές όπως transactional memory (speculative τεχνικές).
+    \item [Non-Speculative:] Ακριβώς το αντίθετο με το προηγούμενο.
+\end{description}
+
+Τα μη-αντίθετα hints μεταξύ τους μπορούν να συνδιαστούν κίολας.
+
+\begin{figure}[H]
+    \centering
+        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_critical.jpg}
+        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_critical_speedup.jpg}
+    \caption{K-Means Naive - Critical Directive}
+    \label{fig:K-Means Naive - Critical Directive}
+\end{figure}
+
+Τα συμπεράσματα είναι παρόμοια με άλλες υλοποιήσεις lock. Το directive δεν κάνει scale με καλό τρόπο, την 
+βέλτιστη απόδοση την έχει στα 2 νήματα. Για μεγαλύτερο αριθμό νημάτων, η απόδοση είναι μεταξύ του TAS και TTAS.
+
+\subsubsection*{Best Time - OMP Critical}
+0.4248s - 4 Threads
+
+\subsubsection*{Critical OR Atomic}
+
+Το atomic construct διαβεβαιώνει ότι η ακριβώς επόμενη εντολή γίνεται ατομικά. Δεν χρησιμοποιείται για structured block σαν αυτό
+που συναντάμε σε αυτό το πρόβλημα. Επειδή όμως εδώ το critical section αποτελείται μόνο από increments, μπορούμε να χρησιμοποιήσουμε 
+δύο atomic directives, όπως κάναμε και στην προηγούμενη άσκηση.
+
+\begin{figure}[H]
+    \centering
+        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_atomic.jpg}
+        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_atomic_speedup.jpg}
+    \caption{K-Means Naive - Atomic Directive}
+    \label{fig:K-Means Naive - Atomic Directive}
+\end{figure}
+
+
+\subsubsection*{Best Time - OMP Atomic}
+0.4867s - 16 Threads
+
+Συγκρίνοντας την χρήση του critical και του atomic, καλύτερο χρόνο πετυχαίνει το critical για μικρότερο αριθμό
+νημάτων. Αν και το overhead για το critical είναι μεγαλύτερο από το overhead του atomic, το pragma omp atomic 
+παρουσιάζεται περισσότερες φορές στο critical section ενώ το omp critical μόνο 1 φορά. 
+
+Σημαντικότερο design choice από το ποιο lock πρέπει να επιλέξει ένας προγραμματιστής είναι και τι μέθοδο θα χρησιμοποιήσει
+για τον συγχρονισμό, έίτε αυτό είναι συμβατικά locks, atomic operations, speculative methods ή reduction.
+Για παράδειγμα, για τον αλγόριθμο K-means, η version του reduction κλιμάκωνε με καλύτερο συμπεριφορά.
+
+Γενικά, σαν τελικό συμπέρασμα για τα διαφορετικά κλειδώματα, αυτή η υλοποίηση του αλγορίθμου K-Means, 
+δεν κλιμακώνει πολύ καλά για μεγάλο αριθμό νημάτων. Τον καλύτερο χρόνο πετυχαίνει το TAS για μικρό αριθμό
+νημάτων όμως. Για τόσο λίγους "εργάτες", είναι πολύ σημαντικό το lock που θα χρησιμοποιήσουμε είναι να έχει μικρό
+overhead. 
+
+Το συμπέρασμα αυτό είναι αρκετά διαφορετικό για μεγάλο αριθμό νημάτων. Οι πιο εξειδικευμένες λύσεις όπως το 
+Array Lock και το CLH Lock παρουσιάζουν πολύ πιο ισορροπημένα αποτελέσματα. Κύριος λόγος είναι η architectural aware
+υλοποίηση τους. Η εφαρμογή τους σε διαφορετικά προβλήματα που κλιμακώνουν καλύτερα για περισσότερα νήματα θα έδειχναν
+πιο καθαρά την ανωτερότητα τους συγκριτικά με τα άλλα locks. Κύριο μειονέκτημα τους είναι το μεγαλύτερο overhead που έχουν και η 
+λίγο μεγαλύτερη ανάγκη για μνήμη.
+
 \subsubsection*{All Times}
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFilesCores/plots/kmeans_locks_all.jpg}
-        \includegraphics[scale=0.4]{outFilesCores/plots/kmeans_locks_all_speedup.jpg}
+        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_all.jpg}
+        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_all_speedup.jpg}
     \caption{K-Means Naive - All Locks}
     \label{fig:K-Means Naive - All Locks}
 \end{figure}
-
-
-\subsection{Mutual Exclusion με χρήση critical/atomic pragma}
-
-Είχα πάει σε πρόγραμμα Erasmus+ και δεν πρόλαβα να κάνω αυτό το ερώτημα καθώς είχε πέσει ο sandman την ώρα που το έστελνα.
-Θα το παραδώσω μαζί με το επόμενο ερώτημα, χίλια συγγνώμη.
 
 \end{document}

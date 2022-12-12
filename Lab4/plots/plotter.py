@@ -9,6 +9,26 @@ from pathlib import Path
 def logger(type:str, workload:str, size:int) -> list[float]:
     throughputList = []
     completeList = []
+    speedupList = []
+
+    if size == 1024:
+        if workload == "100/0/0":
+            serialThroughput = 1566.15
+        elif workload == "80/10/10":
+            serialThroughput = 1897.13
+        elif workload == "20/40/40":
+            serialThroughput = 1612.85
+        elif workload == "0/50/50":
+            serialThroughput = 1410.06
+    elif size == 8192:
+        if workload == "100/0/0":
+            serialThroughput = 151.82
+        elif workload == "80/10/10":
+            serialThroughput = 69.55
+        elif workload == "20/40/40":
+            serialThroughput = 81.33
+        elif workload == "0/50/50":
+            serialThroughput = 65.60
     
     total = workload.split('/')[0]
     add = workload.split('/')[1]
@@ -28,10 +48,16 @@ def logger(type:str, workload:str, size:int) -> list[float]:
 
     fp.close()
     
-    return throughputList
+    speedupList = [x / serialThroughput for x in throughputList]
+    return throughputList, speedupList
 
-def plotThroughput(outFilePath:str, title:str, dataList, mode):
+def plotThroughput(outFilePath:str, title:str, dataList, mode, speedup=False):
     threads = ['1', '2', '4', '8', '16', '32', '64', '128']
+
+    if speedup is True:
+        ylabel = 'Speedup'
+    elif speedup is False:
+        ylabel = "Throughput(Kops/sec)"
 
     if mode == 'all':
         legend = ["Coarse-Grain Locking", "Fine-Grain Locking", "Optimistic Syncrhonization", "Lazy Syncrhonization", "Non-Block Synchronization"]
@@ -53,7 +79,7 @@ def plotThroughput(outFilePath:str, title:str, dataList, mode):
 
     plt.xticks(X_axis, threads)
     plt.xlabel("Number of Threads")
-    plt.ylabel("Throughput(Kops/sec)")
+    plt.ylabel(ylabel)
     plt.title(title)
     plt.legend()
     plt.savefig(outFilePath)
@@ -78,29 +104,52 @@ def main():
             lowJpgPath = f"outFiles/plots/concurrent_data_structs_low_{size}_{total}_{add}_{remove}.jpg"
             highJpgPath = f"outFiles/plots/concurrent_data_structs_high_{size}_{total}_{add}_{remove}.jpg"
 
+            allSpeedupJpgPath = f"outFiles/plots/concurrent_data_structs_all_speedup_{size}_{total}_{add}_{remove}.jpg"
+            lowSpeedupJpgPath = f"outFiles/plots/concurrent_data_structs_low_speedup_{size}_{total}_{add}_{remove}.jpg"
+            highSpeedupJpgPath = f"outFiles/plots/concurrent_data_structs_high_speedup_{size}_{total}_{add}_{remove}.jpg"
+
             allTitle = f"Concurrent Linked List - Size: {size} - Workload: {workload}"
             lowTitle = f"Concurrent Linked List - Low Performers - Size: {size} - Workload: {workload}"
             highTitle = f"Concurrent Linked List - High Performers - Size: {size} - Workload: {workload}"
 
+            allSpeedupTitle = f"Concurrent Linked List - Speedup - Size: {size} - Workload: {workload}"
+            lowSpeedupTitle = f"Concurrent Linked List - Speedup - Low Performers - Size: {size} - Workload: {workload}"
+            highSpeedupTitle = f"Concurrent Linked List - Speedup - High Performers - Size: {size} - Workload: {workload}"
+
             allDataList = []
             lowPerformersList = []
-            highPerformersList = []            
+            highPerformersList = []
+
+            allSpeedup = []
+            lowPerformersSpeedup = []
+            highPerformersSpeedup = []            
 
             for type in allTypes:
-                data = logger(type, workload, size)
+                data, speedup = logger(type, workload, size)
                 allDataList.append(data)
+                allSpeedup.append(speedup)
 
             for type in lowPerformers:
-                data = logger(type, workload, size)
+                data, speedup = logger(type, workload, size)
                 lowPerformersList.append(data)
+                lowPerformersSpeedup.append(speedup)
 
             for type in highPerformers:
-                data = logger(type, workload, size)
+                data, speedup = logger(type, workload, size)
                 highPerformersList.append(data)
+                highPerformersSpeedup.append(speedup)
 
             plotThroughput(outFilePath = allJpgPath, title = allTitle, dataList=allDataList, mode='all')
             plotThroughput(outFilePath = lowJpgPath, title = lowTitle, dataList=lowPerformersList, mode='low')
             plotThroughput(outFilePath = highJpgPath, title = highTitle, dataList=highPerformersList, mode='high')
+
+            plotThroughput(outFilePath = allSpeedupJpgPath, title = allSpeedupTitle, dataList = allSpeedup, mode = 'all', speedup=True)
+            plotThroughput(outFilePath = lowSpeedupJpgPath, title = lowSpeedupTitle, dataList = lowPerformersSpeedup, mode = 'low', speedup=True)
+            plotThroughput(outFilePath = highSpeedupJpgPath, title = highSpeedupTitle, dataList = highPerformersSpeedup, mode = 'high', speedup=True)
+
+            allSpeedup = []
+            lowPerformersSpeedup = []
+            highPerformersSpeedup = []            
             
             allDataList = []
             lowPerformersList = []
