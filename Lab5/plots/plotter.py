@@ -36,7 +36,7 @@ def CSVLogger(type:str, size:int, numCoords:int, clusters:int):
         sumList.append(Sum)
     
     speedupArray = [serialTime / x for x in sumList]
-    print(measurementArray, speedupArray)
+    # print(measurementArray, speedupArray)
     return measurementArray, speedupArray, sumList
 
 def timePlotter(outFilePath:str, title:str, timeList, color:str):
@@ -81,8 +81,8 @@ def singularPlot(type:str, numCoords:int, size:int, clusters:int, color:str):
     outFilePath = f"outFiles/plots/kmeans_gpu_{type}_{numCoords}_"
     title = f"K-Means - CUDA Version - Size:{size}MB, Coords:{numCoords}, Clusters:{clusters}"
 
-    timePath = outFilePath + "time.jpg"
-    speedupPath = outFilePath + "speedup.jpg"
+    timePath = outFilePath + "time.png"
+    speedupPath = outFilePath + "speedup.png"
 
     timeTitle = title + f" - {type}"
     speedupTitle = title + " - Speedup" + f" - {type}"
@@ -112,14 +112,14 @@ def commonFigurePlotter(types, coordsList, colors, legends):
             cnt = 0.1
             if mode == 'Speedup':
                 title += " - Speedup"
-                outFilePath += "speedup.jpg"
+                outFilePath += "speedup.png"
                 for type,color,legend in zip(types,colors,legends):
                     _, speedupList, sumList = CSVLogger(type,256,numCoords, 16)
                     
                     plt.bar(X_axis+cnt, speedupList, 0.2, color=color,label=legend)
                     cnt += 0.2
             elif mode == 'Time':
-                outFilePath += "time.jpg"
+                outFilePath += "time.png"
                 for type,color,legend in zip(types,colors,legends):
                     _, speedupList, sumList = CSVLogger(type,256,numCoords, 16)
                     
@@ -137,6 +137,39 @@ def commonFigurePlotter(types, coordsList, colors, legends):
             f.set_figheight(6)
             f.tight_layout()
         
+def piePlot(type:str, numCoords:int, legend:str):
+    measurementArray, _, _ = CSVLogger(type, 256, numCoords, 16)
+    breakLists = list(zip(*measurementArray))
+
+    outFilePath = f"outFiles/plots/kmeans_gpu_{type}_{numCoords}_bottleneck_analysis.png"
+    title = f"K-Means - Bottleneck Analysis - {legend} - Size:256MB, Coords:{numCoords}, Clusters:16"
+
+    labels = ['CPU Time', 'CPU-GPU Transfers Time', 'GPU Time']
+    cpuTime = sum(breakLists[1])/len(breakLists[1])
+    transferTime = sum(breakLists[2])/len(breakLists[2])
+    gpuTime = sum(breakLists[3])/len(breakLists[3])
+    print(f"Bottleneck: {type} - {numCoords}")
+    print(cpuTime, transferTime, gpuTime)
+    
+    explode = (0,0,0)
+    
+    pieArray = [cpuTime, transferTime, gpuTime]
+
+    f = plt.figure()
+    f.set_figwidth(8)
+    f.set_figheight(6)
+    f.tight_layout() 
+    plt.pie(pieArray, explode=explode, labels=labels, autopct='%1.1f%%', shadow=True)
+    plt.axis('equal')
+    plt.title(title)
+    plt.savefig(outFilePath)
+
+def piePlotAll(types, coordsList,legends):
+    for type,legend in zip(types,legends):
+        for numCoords in coordsList:
+            piePlot(type, numCoords,legend)
+    
+
 def runAllPlots():
     types = ["Naive", "Transpose", "Shmem"]
     legend = ["Naive", "Transpose", "Shared Memory"]
@@ -145,6 +178,7 @@ def runAllPlots():
 
     commonFigurePlotter(types, coordsList, colors, legend)
     plotAll(types, coordsList, colors)
+    piePlotAll(types, coordsList, legend)
 
 def main():
     runAllPlots()
