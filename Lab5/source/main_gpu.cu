@@ -139,13 +139,13 @@ int main(int argc, char **argv)
     printf("\n");
 
     
-    //printf("Final cluster centers:\n");
-    //for (i=0; i<numClusters; i++) {
+    // printf("Final cluster centers:\n");
+    // for (i=0; i<numClusters; i++) {
     //    printf("clusters[%ld] = ",i);
     //   for (j=0; j<numCoords; j++)
     //        printf("%6.2f ", clusters[i*numCoords + j]);
     //    printf("\n");
-    //}
+    // }
  
  #ifdef VALIDATE
  	printf("Performing validation....");

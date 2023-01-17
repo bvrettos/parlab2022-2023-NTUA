@@ -8,18 +8,22 @@
 Μελετάμε διαφορετικές τεχνικές με τις οποίες μπορούμε να δομήσουμε ένα πρόγραμμα που θα εκτελεστεί σε GPU και πως
 μπορούμε να αξιοποιήσουμε όλο το υλικό για να μειώσουμε τον χρόνο εκτέλεσης, κρατώντας την GPU συνεχώς busy.
 
-\subsubsection*{Σύντομη Παρουσίαση Υλικού - Αναφορά στο μοντέλο εκτέλεσης SIMT}
+% \subsubsection*{Σύντομη Παρουσίαση Υλικού - Αναφορά στο μοντέλο εκτέλεσης SIMT}
 
-Τρέχοντας query μέσω του NVIDIA System Management Interface (nvidia - smi), αναγνωρίζουμε ότι η κάρτα γραφικών που
-χρησιμοποιούμε για να τρέξουμε τα προγράμματα είναι η NVIDIA Tesla K40c.
+% Τρέχοντας query μέσω του NVIDIA System Management Interface (nvidia - smi), αναγνωρίζουμε ότι η κάρτα γραφικών που
+% χρησιμοποιούμε για να τρέξουμε τα προγράμματα είναι η NVIDIA Tesla K40c.
 
 \subsection{Τεχνικές υλοποίησης αλγορίθμων που εκτελούνται σε αρχιτεκτονικές GPU}
 
 Στον προγραμματισμό με χρήση επιταχυντών, ο κλασσικός επεξεργαστής συνεχίζει να εκτελεί σημαντικό έργο, αρχικοποιώντας
 και μεταφέροντας δεδομένα.
 
-Ο χρόνος σειριακής εκτέλεσης για configuration \{Size, Coords, Clusters, Loops\} = \{256, 2, 16, 10\} είναι ίσος με 18446.2ms.
-Για configuration \{Size, Coords, Clusters, Loops\} = \{256, 16, 16, 10\} είναι ίσος με 5484.8ms.
+Ο χρόνος σειριακής εκτέλεσης:
+
+\begin{itemize}
+    \item \{Size, Coords, Clusters, Loops\} = \{256, 2, 16, 10\} είναι ίσος με 18446.2ms
+    \item \{Size, Coords, Clusters, Loops\} = \{256, 16, 16, 10\} είναι ίσος με 5484.8ms
+\end{itemize}
 
 \textbf{Σημείωση:} Όλος ο κώδικας της άσκησης βρίσκεται σε ξεχωριστό .zip αρχείο στο Helios της ομάδας.
 
@@ -60,9 +64,6 @@ membership, ώστε να γίνει η ανανέωση των κέτρων τ�
 \textbf{Σημείωση:} Ο υπολογισμός του occupancy έγινε με βάση το αρχείο spreadsheet της NVIDIA. Δεν είναι πλήρως ορθό κριτήριο
 για την επιλογή του block size. Πιο μοντέρνοι - application specific τρόποι υπολογισμού του occupancy είναι προτιμότερες επιλογές.
 
-
-% Εξήγησε γιατί όχι...
-
 \subsubsection*{K-Means Naive - Best Time}
 
 2051.098108ms - 128 Block Size
@@ -90,7 +91,7 @@ membership, ώστε να γίνει η ανανέωση των κέτρων τ�
 η πρώτη θέση μνήμης που έκανε πρόσβαση το κάθε νήμα ήταν μια σειρά μακριά. Άρα, γινόντουσαν πολλαπλά memory transactions για να υπολογιστούν
 οι αποστάσεις. Το ίδιο πρόβλημα παρουσιαζόταν και στον πίνακα των αντικειμένων (Objects, με διαστάσεις x:numObjs, y:numCoords)
 
-Το πρόβλημα αυτό λύνεται κάνοντας τις προσβάσεις στην μνήμη συνεχόμενες ΚΑΙ ευθυγραμμισμένες. Αυτό πετυχένεται κάνοντας transpose τους προαναφερόμενους
+Το πρόβλημα αυτό λύνεται κάνοντας τις προσβάσεις στην μνήμη συνεχόμενες ΚΑΙ ευθυγραμμισμένες. Αυτό πετυχαίνεται κάνοντας transpose τους προαναφερόμενους
 πίνακες.
 
 Το block size πάλι δεν φαίνεται να επηρεάζει σημαντικά τα αποτελέσματα. Με εξαίρεση το blockSize=32, οι υπόλοιπες επιλογές παρουσιάζουν
@@ -100,7 +101,6 @@ membership, ώστε να γίνει η ανανέωση των κέτρων τ�
 
 \subsubsection*{K-Means Transpose - Best Time}
 1883.369207ms - 128 Block Size
-
 
 \subsection{K-Means Shared Memory}
 Το τελευταίο άμεσο βήμα βελτιστοποίησης είναι να εκμεταλευτούμε παραπάνω το ίδιο το υλικό. Οι \textbf{Streaming Multiprocessors} της κάρτας
@@ -119,12 +119,23 @@ membership, ώστε να γίνει η ανανέωση των κέτρων τ�
 \end{figure}
 
 \subsubsection*{K-Means Shared Memory - Συμπεράσματα}
+Τα αποτελέσματα είναι τα βέλτιστα συγκριτικά με τις 3 υλοποιήσεις. Η shared memory είναι μια πιο ελεγχόμενη μορφή μνήμης cache, στην οποία μπορούμε αναλόγως
+το πρόβλημα, να τοποθετήσουμε και διαφορετικά δεδομένα, συγκεκριμένα αυτά που χρησιμοποιούνται πιο συχνά. Σημαντικό είναι να τοποθετούμε τα δεδομένα με σωστό τρόπο
+ώστε να αποφευχθούν τα bank conflicts.
+
+Η μείωση του χρόνου είναι λογική αφού χρησιμοποιούμε μνήμη πιο πάνω στην ιεραρχία από αυτήν που χρησιμοποιούσαμε στην Transpose/Naive έκδοση. Πλέον, οι προσπελάσεις
+γίνονται γρηγορότερα. Η μοιραζόμενη μνήμη είναι κοινή για νήματα που βρίσκονται στο ίδιο block. Με βάση το occupancy calculator, και στα 2 configurations που μελετάμε,
+γίνεται υψηλή χρήση των SM.
+
+Το block size συνεχίζει να μην παίζει κάποιο ρόλο στην εκτέλεση του προγράμματος, βέλτιστο είναι πάλι οτιδήποτε πάνω ή ίσο με 128 νήματα.
 
 \subsubsection*{K-Means Shared Memory - Best Time}
 1541.312933ms - 128 Block Size
 
 \subsection{Σύγκριση υλοποιήσεων / bottleneck Analysis / μελέτη άλλων configuration}
 
+Από τις 3 υλοποιήσεις, λογικό η καλύτερη να είναι αυτή που αξιοποιεί και την μοιραζόμενη μνήμη αλλά και το memory coalescing, δηλαδή, η Shared Memory version.
+Οι χρόνοι εκτέλεσεις και το speedup παρουσιάζονται σε κοινό διάγραμμα και για τις 3 εκδόσεις παρακάτω. 
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.40]{/outFiles/plots/kmeans_gpu_common_figure_2_time.png}
@@ -134,7 +145,7 @@ membership, ώστε να γίνει η ανανέωση των κέτρων τ�
 \end{figure}
 
 \subsubsection*{Bottleneck Analysis}
-Προσθέτουμε 3 ξεχωριστά timers (CPU, Transfer, GPU) για να μελετήσουμε πιο μέρος του συστήματος σπαταλάει τον
+Προσθέτουμε 3 ξεχωριστά timers (CPU, Transfer, GPU) για να μελετήσουμε πιο μέρος του συστήματος απαιτεί τον
 περισσότερο χρόνο. Οι πίνακες είναι κατά μέσο όρο για όλα τα block sizes που μελετάμε και σε millisecond.
 
 \noindent
@@ -157,13 +168,12 @@ Shared Memory & 796.91 & 406.115 & 433.498\\\hline
 
 Το μέρος που εκτελείται στον επεξεργαστή είναι περίπου σταθερό, παρατηρούμε όμως μια μικρή μείωση, κοντά στα 10\%,
 μεταξύ της Naive έκδοσης και των Transpose/Shared Memory. Αυτή δικαιολογείται γιατί πλέον ο υπολογισμός των νέων κέντρων
-γίνεται με βάση τον transposed πίνακα, που είναι ελάχιστα πιο cache-friendly.
+γίνεται με βάση τον transposed πίνακα, που είναι ελάχιστα πιο cache-friendly (τουλάχιστον για το συγκεκριμένο configuration).
 
 Το κυριότερο bottleneck είναι η εκτέλεση στον CPU και η μεταφορά των δεδομένων. Ο συνολικός χρόνος εκτέλεσης μπορεί να 
 μειωθεί περαιτέρω αν μεταφερθεί όλη η εκτέλεση του αλγορίθμου στην GPU. Έτσι, περιορίζεται δραστικά η συνεχόμενη μεταφορά 
-δεδομένων μεταξύ host και device.
-
-Άλλη προσέγγιση θα ήταν να γίνει η ανανέωση των κέντρων με χρήση πολυνηματισμού στον επεξεργαστή.
+δεδομένων μεταξύ host και device. Επίσης, αξιοποιούμε το γεγονός ότι μπορεί, έστω στοιχειωδώς, να παραλληλοποιηθεί το task 
+εύρεσης νέων κέντρων.
 
 \begin{figure}[H]
     \centering
@@ -174,13 +184,26 @@ Shared Memory & 796.91 & 406.115 & 433.498\\\hline
     \label{fig:K-Means - Bottleneck Analysis - numCoords=2}
 \end{figure}
 
-
 \subsubsection*{Μελέτη Άλλων Configuration}
+
+Δημιουργούμε τα γραφήματα των ίδιων υλοποιήσεων για το configuration \{Size, Coords, Clusters, Loops\} = \{256, 16, 16, 10\}.
+Τα "σφάλματα" στην σχεδίαση του Naive αλγορίμου είναι πιο ξεκάθαρα εδώ. Το γεγονός ότι δεν εκμεταλέυεται την ικανότητα των 
+GPU για memory coalescing και, αντιθέτως, απαιτούνται πολλαπλά transactions για τον υπολογισμό των αποστάσεων, περιορίζει πολύ την
+επίδοσή της. 
+
+Η transpose έκδοση είναι πάνω από 5 φορές καλύτερη στο GPU μέρος αλλά 2 φορές χειρότερη στο CPU μέρος. Η χειροτέρευση 
+του CPU μέρους εξηγείται από το γεγονός ότι υπολογίζουμε τα νέα κέντρα με column-based δεικτοδότηση η οποία δεν είναι τόσο 
+cache-friendly (τουλάχιστον στο συγκεκριμένο configuration).
+
+Το κόστος της μεταφοράς είναι πάλι κοινό για όλες τις μεταφορές. Η shared έκδοση μπορεί να βελτιωθεί στο κομμάτι που αναλαμβάνει η CPU.
+Μια καλή λύση θα ήταν να ξαναγίνεται transpose ο πίνακας πριν μεταφερθεί στην CPU, καθώς η GPU μπορεί να κάνει αυτό το transpose πολύ πιο σύντομα.
+
+
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.40]{/outFiles/plots/kmeans_gpu_common_figure_16_time.png}
-    \includegraphics[scale=0.40]{/outFiles/plots/kmeans_gpu_common_figure_16_speedup.png}
+    \includegraphics[scale=0.38]{/outFiles/plots/kmeans_gpu_common_figure_16_time.png}
+    \includegraphics[scale=0.38]{/outFiles/plots/kmeans_gpu_common_figure_16_speedup.png}
     \caption{K-Means - GPU Edition Size - numCoords=16}
     \label{fig:K-Means - GPU Edition - {Size:256Mb, numCoords:16, numClusters:16}}
 \end{figure}
@@ -197,9 +220,9 @@ Shared Memory & 549.727 & 53.006 & 144.105\\\hline
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.40]{/outFiles/plots/kmeans_gpu_Naive_16_bottleneck_analysis.png}
-    \includegraphics[scale=0.40]{/outFiles/plots/kmeans_gpu_Transpose_16_bottleneck_analysis.png}
-    \includegraphics[scale=0.40]{/outFiles/plots/kmeans_gpu_Shmem_16_bottleneck_analysis.png}
+    \includegraphics[scale=0.38]{/outFiles/plots/kmeans_gpu_Naive_16_bottleneck_analysis.png}
+    \includegraphics[scale=0.38]{/outFiles/plots/kmeans_gpu_Transpose_16_bottleneck_analysis.png}
+    \includegraphics[scale=0.38]{/outFiles/plots/kmeans_gpu_Shmem_16_bottleneck_analysis.png}
     \caption{K-Means - Bottleneck Analysis - numCoords=16}
     \label{fig:K-Means - Bottleneck Analysis - numCoords=16}
 \end{figure}
