@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <sys/time.h>
-#include "mpi.h"
+#include <mpi.h>
 #include "utils.h"
 
 int main(int argc, char ** argv) {
