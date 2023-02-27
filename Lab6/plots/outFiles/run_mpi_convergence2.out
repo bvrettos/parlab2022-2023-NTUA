@@ -1,0 +1,9 @@
+Jacobi X 1024 Y 1024 Px 8 Py 8 Iter 798201 CommunicationTime(Median) 226.990563 ComputationTime(Max) 41.639159 ConverganceTime(Max) 9.483089 TotalTime 271.591397 midpoint 5.431021
+Jacobi X 1024 Y 1024 Px 4 Py 16 Iter 798201 CommunicationTime(Median) 438.034947 ComputationTime(Max) 39.307641 ConverganceTime(Max) 28.050413 TotalTime 490.846503 midpoint 5.431021
+Jacobi X 1024 Y 1024 Px 16 Py 4 Iter 798201 CommunicationTime(Median) 551.001523 ComputationTime(Max) 36.367306 ConverganceTime(Max) 24.154041 TotalTime 598.316578 midpoint 5.431021
+GaussSeidelSOR X 1024 Y 1024 Px 8 Py 8 Iter 3201 CommunicationTime(Median) 1.432192 ComputationTime(Max) 0.610965 ConverganceTime(Max) 0.140001 TotalTime 2.138882 midpoint 5.642998
+GaussSeidelSOR X 1024 Y 1024 Px 4 Py 16 Iter 3201 CommunicationTime(Median) 2.463464 ComputationTime(Max) 0.563537 ConverganceTime(Max) 0.234928 TotalTime 3.174773 midpoint 5.642998
+GaussSeidelSOR X 1024 Y 1024 Px 16 Py 4 Iter 3201 CommunicationTime(Median) 2.777192 ComputationTime(Max) 0.600340 ConverganceTime(Max) 0.259424 TotalTime 3.529918 midpoint 5.642998
+RedBlackSOR X 1024 Y 1024 Px 8 Py 8 Iter 2501 CommunicationTime(Median) 1.416527 ComputationTime(Max) 0.327921 ConverganceTime(Max) 0.031343 TotalTime 1.792818 midpoint 5.642973
+RedBlackSOR X 1024 Y 1024 Px 4 Py 16 Iter 2501 CommunicationTime(Median) 2.734933 ComputationTime(Max) 0.305216 ConverganceTime(Max) 0.089034 TotalTime 3.117628 midpoint 5.642973
+RedBlackSOR X 1024 Y 1024 Px 16 Py 4 Iter 2501 CommunicationTime(Median) 3.460685 ComputationTime(Max) 0.308721 ConverganceTime(Max) 0.078877 TotalTime 3.841751 midpoint 5.642973
