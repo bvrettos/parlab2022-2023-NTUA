@@ -54,8 +54,8 @@
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_nosync.jpg}
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_nosync_speedup.jpg}
+        \includegraphics[scale=0.48]{outFilesAffinityMouliko/plots/kmeans_locks_nosync.jpg}
+        \includegraphics[scale=0.48]{outFilesAffinityMouliko/plots/kmeans_locks_nosync_speedup.jpg}
     \caption{K-Means Naive - No Sync}
     \label{fig:K-Means Naive - No Sync}
 \end{figure}
@@ -77,8 +77,8 @@ locked και unlocked. Μόνο ένα νήμα επιτρέπεται να κ�
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/kmeans_locks_pthread_mutex.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/kmeans_locks_pthread_mutex_speedup.jpg}
+        \includegraphics[scale=0.48]{outFiles/plots/kmeans_locks_pthread_mutex.jpg}
+        \includegraphics[scale=0.48]{outFiles/plots/kmeans_locks_pthread_mutex_speedup.jpg}
     \caption{K-Means Naive - PThread - Mutex}
     \label{fig:K-Means Naive - PThread - Mutex}
 \end{figure}
@@ -104,8 +104,8 @@ atomic\_exchange (αν υποστηρίζεται από το υλικό) ή μ�
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_pthread_spin.jpg}
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_pthread_spin_speedup.jpg}
+        \includegraphics[scale=0.48]{outFilesAffinityMouliko/plots/kmeans_locks_pthread_spin.jpg}
+        \includegraphics[scale=0.48]{outFilesAffinityMouliko/plots/kmeans_locks_pthread_spin_speedup.jpg}
     \caption{K-Means Naive - PThread - Spinlock}
     \label{fig:K-Means Naive - PThread - Spinlock}
 \end{figure}
@@ -132,8 +132,8 @@ atomic\_exchange (αν υποστηρίζεται από το υλικό) ή μ�
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_tas.jpg}
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_tas_speedup.jpg}
+        \includegraphics[scale=0.48]{outFilesAffinityMouliko/plots/kmeans_locks_tas.jpg}
+        \includegraphics[scale=0.48]{outFilesAffinityMouliko/plots/kmeans_locks_tas_speedup.jpg}
     \caption{K-Means Naive - TAS}
     \label{fig:K-Means Naive - TAS}
 \end{figure}
@@ -172,8 +172,8 @@ cache invalidations ανανεώνοντας συνεχώς την τιμή το
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_ttas.jpg}
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_ttas_speedup.jpg}
+        \includegraphics[scale=0.48]{outFilesAffinityMouliko/plots/kmeans_locks_ttas.jpg}
+        \includegraphics[scale=0.48]{outFilesAffinityMouliko/plots/kmeans_locks_ttas_speedup.jpg}
     \caption{K-Means Naive - TTAS}
     \label{fig:K-Means Naive - TTAS}
 \end{figure}
@@ -206,8 +206,8 @@ TAS κλειδώματα. Ακόμα όμως και με αυτή την αλλ
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFilesCores/plots/kmeans_locks_array.jpg}
-        \includegraphics[scale=0.4]{outFilesCores/plots/kmeans_locks_array_speedup.jpg}
+        \includegraphics[scale=0.48]{outFilesCores/plots/kmeans_locks_array.jpg}
+        \includegraphics[scale=0.48]{outFilesCores/plots/kmeans_locks_array_speedup.jpg}
     \caption{K-Means Naive - Array Based Lock}
     \label{fig:K-Means Naive - Array Based Lock}
 \end{figure}
@@ -249,8 +249,8 @@ spin στις τοπικές θέσεις τους, μειώνοντας έτσ�
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFilesCores/plots/kmeans_locks_clh.jpg}
-        \includegraphics[scale=0.4]{outFilesCores/plots/kmeans_locks_clh_speedup.jpg}
+        \includegraphics[scale=0.48]{outFilesCores/plots/kmeans_locks_clh.jpg}
+        \includegraphics[scale=0.48]{outFilesCores/plots/kmeans_locks_clh_speedup.jpg}
     \caption{K-Means Naive - CLH Lock}
     \label{fig:K-Means Naive - CLH Lock}
 \end{figure}
@@ -282,8 +282,8 @@ mutual exclusion όμως δεν προσφέρει έλεγχο για τον �
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_critical.jpg}
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_critical_speedup.jpg}
+        \includegraphics[scale=0.48]{outFilesAffinityMouliko/plots/kmeans_locks_critical.jpg}
+        \includegraphics[scale=0.48]{outFilesAffinityMouliko/plots/kmeans_locks_critical_speedup.jpg}
     \caption{K-Means Naive - Critical Directive}
     \label{fig:K-Means Naive - Critical Directive}
 \end{figure}
@@ -302,8 +302,8 @@ mutual exclusion όμως δεν προσφέρει έλεγχο για τον �
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_atomic.jpg}
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_atomic_speedup.jpg}
+        \includegraphics[scale=0.48]{outFilesAffinityMouliko/plots/kmeans_locks_atomic.jpg}
+        \includegraphics[scale=0.48]{outFilesAffinityMouliko/plots/kmeans_locks_atomic_speedup.jpg}
     \caption{K-Means Naive - Atomic Directive}
     \label{fig:K-Means Naive - Atomic Directive}
 \end{figure}
@@ -331,12 +331,12 @@ Array Lock και το CLH Lock παρουσιάζουν πολύ πιο ισο�
 πιο καθαρά την ανωτερότητα τους συγκριτικά με τα άλλα locks. Κύριο μειονέκτημα τους είναι το μεγαλύτερο overhead που έχουν και η 
 λίγο μεγαλύτερη ανάγκη για μνήμη.
 
-\subsubsection*{All Times}
+\subsubsection*{Common Plot for every lock}
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_all.jpg}
-        \includegraphics[scale=0.4]{outFilesAffinityMouliko/plots/kmeans_locks_all_speedup.jpg}
+        \includegraphics[scale=0.7]{outFilesAffinityMouliko/plots/kmeans_locks_all.jpg}
+        \includegraphics[scale=0.7]{outFilesAffinityMouliko/plots/kmeans_locks_all_speedup.jpg}
     \caption{K-Means Naive - All Locks}
     \label{fig:K-Means Naive - All Locks}
 \end{figure}

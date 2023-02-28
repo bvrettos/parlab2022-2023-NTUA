@@ -28,7 +28,7 @@ kmeansSpeedup = [tSerial / x for x in kmeansTime]
 
 if mode == "time":
 
-    path = "kmeans_reduction_hard_fs.png"
+    path = "kmeansReductionPlots/kmeans_reduction_hard_fs.png"
     title = "K-means - Reduction - Time - False-Sharing - Size:256MB, Coords:1, Clusters:4"
 
     f = plt.figure()
@@ -39,7 +39,7 @@ if mode == "time":
     X_axis = np.arange(len(threads))
 
 
-    plt.bar(X_axis, kmeansTime, 0.3, color="red")
+    plt.bar(X_axis, kmeansTime, 0.3, color="red",  edgecolor='black')
 
     plt.xticks(X_axis, threads)
     plt.xlabel("Number of Threads")
@@ -48,12 +48,12 @@ if mode == "time":
     plt.savefig(path)
 
 elif mode == "speedup":
-    path = "kmeans_reduction_hard_fs_speedup.png"
+    path = "kmeansReductionPlots/kmeans_reduction_hard_fs_speedup.png"
     title = "K-means - Reduction - Speedup - False-Sharing - Size:256MB, Coords:1, Clusters:4"
 
     f= plt.figure()
     f.set_figwidth(8)
-    f.set_figheight(6.5)
+    f.set_figheight(5)
     f.tight_layout()
 
     X_axis = np.arange(len(threads))

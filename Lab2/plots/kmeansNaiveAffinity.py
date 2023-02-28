@@ -28,7 +28,7 @@ kmeansSpeedup = [tSerial / x for x in kmeansTime]
 
 if mode == "time":
 
-    path = "kmeans_naive_gomp_cpu_affinity.png"
+    path = "kmeansNaivePlots/kmeans_naive_gomp_cpu_affinity.png"
     title = "K-means - Naive - GOMP_CPU_AFFINITY - Time - Size:256MB, Coords:16, Clusters:16"
 
     f = plt.figure()
@@ -39,7 +39,7 @@ if mode == "time":
     X_axis = np.arange(len(threads))
 
 
-    plt.bar(X_axis, kmeansTime, 0.3, color="red")
+    plt.bar(X_axis, kmeansTime, 0.3, color="red",  edgecolor='black')
 
     plt.xticks(X_axis, threads)
     plt.xlabel("Number of Threads")
@@ -48,12 +48,12 @@ if mode == "time":
     plt.savefig(path)
 
 elif mode == "speedup":
-    path = "kmeans_naive_gomp_cpu_affinity_speedup.png"
+    path = "kmeansNaivePlots/kmeans_naive_gomp_cpu_affinity_speedup.png"
     title = "K-means - Naive - GOMP_CPU_AFFINITY - Speedup - Size:256MB, Coords:16, Clusters:16"
 
     f= plt.figure()
     f.set_figwidth(8)
-    f.set_figheight(6.5)
+    f.set_figheight(5)
     f.tight_layout()
 
     X_axis = np.arange(len(threads))

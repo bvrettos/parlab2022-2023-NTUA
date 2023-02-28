@@ -39,16 +39,16 @@ def plotMultiple(outFilePath:str, title:str, inputList, color, yTitle:str, mode:
     legend = ['No Sync', 'PThread-Mutex', 'PThread-Spinlock', 'TAS', 'TTAS', 'Array', 'CLH', 'OMP Critical', 'OMP Atomic']
 
     f = plt.figure()
-    f.set_figwidth(8)
+    f.set_figwidth(10)
     f.set_figheight(6)
     f.tight_layout()
 
     X_axis = np.arange(len(threads))
 
     if mode == 'Time':
-        cnt = 0.05
+        cnt = -0.1
         for idx, i in enumerate(inputList):
-            plt.bar(X_axis + cnt, i, 0.1, align='edge', label=legend[idx], color=color[idx])
+            plt.bar(X_axis + cnt, i, 0.1, align='edge', label=legend[idx], color=color[idx],  edgecolor='black')
             cnt += 0.1
         plt.xticks(X_axis + 0.3, threads)
         plt.xlabel("Number of Threads")
@@ -57,9 +57,8 @@ def plotMultiple(outFilePath:str, title:str, inputList, color, yTitle:str, mode:
         plt.legend()
         plt.savefig(outFilePath)
     elif mode == 'Speedup':
-        cnt = 0.05
         for idx, i in enumerate(inputList):
-            plt.plot(X_axis + cnt, i, marker='o', label=legend[idx], color=color[idx])
+            plt.plot(X_axis, i, marker='o', label=legend[idx], color=color[idx])
         plt.xticks(X_axis + 0.3, threads)
         plt.xlabel("Number of Threads")
         plt.ylabel(yTitle)
@@ -72,13 +71,13 @@ def timePlotter(outFilePath:str, title:str, timeList, color:str):
     threads = ['1','2','4','8','16','32','64']
 
     f = plt.figure()
-    f.set_figwidth(8)
+    f.set_figwidth(6.5)
     f.set_figheight(5)
     f.tight_layout()
 
     X_axis = np.arange(len(threads))
 
-    plt.bar(X_axis, timeList, 0.3, color=color)
+    plt.bar(X_axis, timeList, 0.3, color=color, edgecolor='black')
 
     plt.xticks(X_axis, threads)
     plt.xlabel("Number of Threads")
