@@ -49,7 +49,7 @@ def timePlotter(outFilePath:str, title:str, timeList, color:str):
 
     X_axis = np.arange(len(blockSize))
 
-    plt.bar(X_axis, timeList, 0.3, color=color)
+    plt.bar(X_axis, timeList, 0.3, color=color, edgecolor='black')
 
     plt.xticks(X_axis, blockSize)
     plt.xlabel("Block Size")
@@ -67,7 +67,7 @@ def speedupPlotter(outFilePath:str, title:str, speedupList, color:str):
 
     X_axis = np.arange(len(blockSize))
 
-    plt.bar(X_axis, speedupList, 0.3, color=color)
+    plt.bar(X_axis, speedupList, 0.3, color=color, edgecolor='black')
 
     plt.xticks(X_axis, blockSize)
     plt.xlabel("Block Size")
@@ -116,14 +116,14 @@ def commonFigurePlotter(types, coordsList, colors, legends):
                 for type,color,legend in zip(types,colors,legends):
                     _, speedupList, sumList = CSVLogger(type,256,numCoords, 16)
                     
-                    plt.bar(X_axis+cnt, speedupList, 0.2, color=color,label=legend)
+                    plt.bar(X_axis+cnt, speedupList, 0.2, color=color,label=legend, edgecolor='black')
                     cnt += 0.2
             elif mode == 'Time':
                 outFilePath += "time.png"
                 for type,color,legend in zip(types,colors,legends):
                     _, speedupList, sumList = CSVLogger(type,256,numCoords, 16)
                     
-                    plt.bar(X_axis+cnt, sumList, 0.2, color=color,label=legend)
+                    plt.bar(X_axis+cnt, sumList, 0.2, color=color,label=legend, edgecolor='black')
                     cnt += 0.2
             plt.xticks(X_axis, blockSize)
             plt.xlabel("Block Size")
@@ -148,8 +148,6 @@ def piePlot(type:str, numCoords:int, legend:str):
     cpuTime = sum(breakLists[1])/len(breakLists[1])
     transferTime = sum(breakLists[2])/len(breakLists[2])
     gpuTime = sum(breakLists[3])/len(breakLists[3])
-    print(f"Bottleneck: {type} - {numCoords}")
-    print(cpuTime, transferTime, gpuTime)
     
     explode = (0,0,0)
     
@@ -164,12 +162,77 @@ def piePlot(type:str, numCoords:int, legend:str):
     plt.title(title)
     plt.savefig(outFilePath)
 
+def bottleneckAnalysisPlot(numCoords:int):
+    naiveArray, _, _ = CSVLogger("Naive", 256, numCoords, 16)
+    transposeArray, _, _ = CSVLogger("Transpose", 256, numCoords, 16)
+    sharedArray, _, _ = CSVLogger("Shmem", 256, numCoords, 16)
+
+    outFilePath = f"outFiles/plots/kmeans_gpu_{numCoords}_bottleneck_analysis.png"
+    title = f"K-Means - Bottleneck Analysis - Size:256MB, Coords:{numCoords}, Clusters:16"
+    blockSize = ['32','64','128','256','512','1024']
+
+    X_axis = np.arange(len(blockSize))
+
+    f = plt.figure()
+    f.set_figwidth(10)
+    f.set_figheight(8)
+    f.tight_layout()
+
+    offset = -0.3
+    for idx, naiveTuple in enumerate(naiveArray):
+        if idx == 0:
+            cpuLabel = "Naive CPU"
+            transLabel = "Naive CPU-GPU Transfers"
+            gpuLabel = "Naive GPU"
+        else:
+            cpuLabel = transLabel = gpuLabel = ""
+        (_, cpuPart, transferPart, gpuPart) = naiveTuple
+        plt.bar(x=X_axis[idx]+offset, width = 0.25, height=gpuPart+transferPart+cpuPart, color="#FF2500", label=gpuLabel, edgecolor="black")
+        plt.bar(x=X_axis[idx]+offset,  width = 0.25, height=transferPart+cpuPart, color="#00FF25", label=transLabel, edgecolor="black")
+        plt.bar(x=X_axis[idx]+offset,  width = 0.25, height=cpuPart, color="#2500FF", label=cpuLabel, edgecolor="black")
+
+    offset += 0.3
+
+    for idx, naiveTuple in enumerate(transposeArray):
+        if idx == 0:
+            cpuLabel = "Transpose CPU"
+            transLabel = "Transpose CPU-GPU Transfers"
+            gpuLabel = "Transpose GPU"
+        else:
+            cpuLabel = transLabel = gpuLabel = ""
+        (_, cpuPart, transferPart, gpuPart) = naiveTuple
+        plt.bar(x=X_axis[idx]+offset, width = 0.25, height=gpuPart+transferPart+cpuPart, color="#FFC100", label=gpuLabel, edgecolor="black")
+        plt.bar(x=X_axis[idx]+offset,  width = 0.25, height=transferPart+cpuPart, color="#00FFC1", label=transLabel, edgecolor="black")
+        plt.bar(x=X_axis[idx]+offset,  width = 0.25, height=cpuPart, color="#C100FF", label=cpuLabel, edgecolor="black")
+
+    offset += 0.3
+
+    for idx, naiveTuple in enumerate(sharedArray):
+        if idx == 0:
+            cpuLabel = "Shared Memory CPU"
+            transLabel = "Shared Memory CPU-GPU Transfers"
+            gpuLabel = "Shared Memory GPU"
+        else:
+            cpuLabel = transLabel = gpuLabel = ""
+        (_, cpuPart, transferPart, gpuPart) = naiveTuple
+        plt.bar(x=X_axis[idx]+offset, width = 0.25, height=gpuPart+transferPart+cpuPart, color="#FF008B", label=gpuLabel, edgecolor="black")
+        plt.bar(x=X_axis[idx]+offset,  width = 0.25, height=transferPart+cpuPart, color="#8BFF00", label=transLabel, edgecolor="black")
+        plt.bar(x=X_axis[idx]+offset,  width = 0.25, height=cpuPart, color="#008BFF", label=cpuLabel, edgecolor="black")
+
+    plt.xticks(X_axis, blockSize)
+    plt.xlabel("Block Size")
+    plt.ylabel("Time (in milliseconds)")
+    plt.title(title)
+    plt.legend()
+    plt.savefig(outFilePath)
+    plt.close()
+    
 def piePlotAll(types, coordsList,legends):
     for type,legend in zip(types,legends):
         for numCoords in coordsList:
             piePlot(type, numCoords,legend)
-    
 
+    
 def runAllPlots():
     types = ["Naive", "Transpose", "Shmem"]
     legend = ["Naive", "Transpose", "Shared Memory"]
@@ -178,7 +241,8 @@ def runAllPlots():
 
     commonFigurePlotter(types, coordsList, colors, legend)
     plotAll(types, coordsList, colors)
-    piePlotAll(types, coordsList, legend)
+    bottleneckAnalysisPlot(2)
+    bottleneckAnalysisPlot(16)
 
 def main():
     runAllPlots()

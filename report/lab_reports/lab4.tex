@@ -1,6 +1,7 @@
 \documentclass[../final_report.tex]{subfiles}
 \usepackage{subfiles}
 \usepackage{diagbox}
+\usepackage[utf8]{inputenc}
 \graphicspath{{../../Lab4/plots/}}
 \begin{document}
 
@@ -67,7 +68,7 @@
 \end{tabular}
 
 \subsubsection*{Concurrent Linked List}
-Έχοντας δει scalable spin locks στην προηγούμενη άσκηση, τα χρησιμοποιούμε για να επιχειρήσουμε να δημιουργήσουμε
+Έχοντας εξετάσει scalable spin locks στην προηγούμενη άσκηση, τα χρησιμοποιούμε για να επιχειρήσουμε να δημιουργήσουμε
 scalable ταυτόχρονες δομές δεδομένων. Το lock που χρησιμοποιούμε σε όλες τις υλοποιήσεις που χρησιμοποιούν lock, είναι
 το pthread Spinlock. 
 
@@ -141,40 +142,40 @@ unlock στο τέλος της.
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_1024_100_0_0.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_1024_80_10_10.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_1024_20_40_40.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_1024_0_50_50.jpg}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_1024_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_1024_80_10_10.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_1024_20_40_40.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_1024_0_50_50.png}
     \caption{Concurrent Linked List - Throughput - Size 1024 - Low Performers}
     \label{fig:Concurrent Linked List - Throughput - Size 1024 - Low Performers}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_8192_100_0_0.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_8192_80_10_10.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_8192_20_40_40.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_8192_0_50_50.jpg}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_8192_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_8192_80_10_10.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_8192_20_40_40.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_8192_0_50_50.png}
     \caption{Concurrent Linked List - Throughput - Size 8192 - Low Performers}
     \label{fig:Concurrent Linked List - Throughput - Size 8192 - Low Performers}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_1024_100_0_0.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_1024_80_10_10.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_1024_20_40_40.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_1024_0_50_50.jpg}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_1024_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_1024_80_10_10.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_1024_20_40_40.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_1024_0_50_50.png}
     \caption{Concurrent Linked List - Speedup - Size 1024 - Low Performers}
     \label{fig:Concurrent Linked List - Speedup - Size 1024 - Low Performers}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_8192_100_0_0.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_8192_80_10_10.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_8192_20_40_40.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_8192_0_50_50.jpg}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_8192_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_8192_80_10_10.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_8192_20_40_40.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_low_speedup_8192_0_50_50.png}
     \caption{Concurrent Linked List - Speedup - Size 8192 - Low Performers}
     \label{fig:Concurrent Linked List - Speedup - Size 8192 - Low Performers}
 \end{figure}
@@ -250,40 +251,40 @@ True, θα αποτύχει.
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_1024_100_0_0.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_1024_80_10_10.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_1024_20_40_40.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_1024_0_50_50.jpg}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_1024_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_1024_80_10_10.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_1024_20_40_40.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_1024_0_50_50.png}
     \caption{Concurrent Linked List - Throughput - Size 1024 - High Performers}
     \label{fig:Concurrent Linked List - Throughput - Size 1024 - High Performers}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_8192_100_0_0.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_8192_80_10_10.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_8192_20_40_40.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_8192_0_50_50.jpg}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_8192_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_8192_80_10_10.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_8192_20_40_40.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_8192_0_50_50.png}
     \caption{Concurrent Linked List - Throughput - Size 8192 - High Performers}
     \label{fig:Concurrent Linked List - Throughput - Size 8192 - High Performers}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_1024_100_0_0.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_1024_80_10_10.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_1024_20_40_40.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_1024_0_50_50.jpg}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_1024_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_1024_80_10_10.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_1024_20_40_40.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_1024_0_50_50.png}
     \caption{Concurrent Linked List - Speedup - Size 1024 - High Performers}
     \label{fig:Concurrent Linked List - Speedup - Size 1024 - High Performers}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_8192_100_0_0.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_8192_80_10_10.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_8192_20_40_40.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_8192_0_50_50.jpg}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_8192_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_8192_80_10_10.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_8192_20_40_40.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_high_speedup_8192_0_50_50.png}
     \caption{Concurrent Linked List - Speedup - Size 8192 - High Performers}
     \label{fig:Concurrent Linked List - Speedup - Size 8192 - High Performers}
 \end{figure}
@@ -304,12 +305,12 @@ throughput τον λιστών "εκτοξεύεται" απευθείας, δι
 κλειδαριών. 
 
 \textbf{Σημείωση}: Αν και στην θεωρία η μέθοδος contains() δεν καθαρίζει κόμβους στην non-blocking λίστα, στην υλοποίηση που μας δίνεται
-αυτό δεν ισχύει. Η συνάρτηση list\_search είναι κοινή και για τις 3 μεθόδους και εκτελεί έλεγχο για καθαρισμό marked κόμβων.
+αυτό δεν ισχύει. Η συνάρτηση list\_search είναι κοινή και για τις 2 μεθόδους και εκτελεί έλεγχο για καθαρισμό marked κόμβων.
 
 \subsubsection*{Size}
 Το μέγεθος της λίστας έχει αρκετά σημαντικό ρόλο στην απόδοση καθώς μεγαλύτερη λίστα σημαίνει λιγότερα conflicts, τουλάχιστον για τις συγκεκριμένες
-λίστες αφού η διάσχιση είναι wait-free. Για μικρές λίστες, η non-blocking λίστα έχει ένα προβάδισμα στην απόδοση ενώ στην μεγαλύτερη λίστα, είναι
-πολύ κοντά οι αποδόσεις. Το μικρό αυτό προβάδισμα το αποκτάει η non-blocking καθώς η lazy λίστα έχει ακόμα το ζήτημα των lock conflict. Το φαινόμενο αυτό
+λίστες αφού η διάσχιση είναι wait-free. Για μικρές λίστες, η non-blocking λίστα έχει ένα προβάδισμα στην επίδοση ενώ στην μεγαλύτερη λίστα, είναι
+πολύ κοντά οι επιδόσεις. Το μικρό αυτό προβάδισμα το αποκτάει η non-blocking καθώς η lazy λίστα έχει ακόμα το ζήτημα των lock conflict. Το φαινόμενο αυτό
 είναι πολύ πιο σπάνιο στην μεγάλη λίστα.
 
 Αν και η lazy λίστα έχει το overhead του κλειδώματος, η non-blocking λίστα έχει το 
@@ -320,47 +321,47 @@ overhead του compare-and-set. Η lazy λίστα δεν καθιστά σίγ
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_1024_100_0_0.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_1024_80_10_10.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_1024_20_40_40.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_1024_0_50_50.jpg}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_1024_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_1024_80_10_10.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_1024_20_40_40.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_1024_0_50_50.png}
     \caption{Concurrent Linked List - Throughput - Size 1024 - All Synchronization Techniques}
     \label{fig:Concurrent Linked List - Throughput - Size 1024 - All Synchronization Techniques}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_8192_100_0_0.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_8192_80_10_10.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_8192_20_40_40.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_8192_0_50_50.jpg}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_8192_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_8192_80_10_10.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_8192_20_40_40.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_8192_0_50_50.png}
     \caption{Concurrent Linked List - Throughput - Size 8192 - All Synchronization Techniques}
     \label{fig:Concurrent Linked List - Throughput - Size 8192 - All Synchronization Techniques}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_1024_100_0_0.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_1024_80_10_10.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_1024_20_40_40.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_1024_0_50_50.jpg}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_1024_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_1024_80_10_10.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_1024_20_40_40.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_1024_0_50_50.png}
     \caption{Concurrent Linked List - Speedup - Size 1024 - All Synchronization Techniques}
     \label{fig:Concurrent Linked List - Speedup - Size 1024 - All Synchronization Techniques}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_8192_100_0_0.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_8192_80_10_10.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_8192_20_40_40.jpg}
-        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_8192_0_50_50.jpg}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_8192_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_8192_80_10_10.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_8192_20_40_40.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_all_speedup_8192_0_50_50.png}
     \caption{Concurrent Linked List - Speedup - Size 8192 - All Synchronization Techniques}
     \label{fig:Concurrent Linked List - Speedup - Size 8192 - All Synchronization Techniques}
 \end{figure}
 
 \subsection*{Τελικά Συμπεράσματα}
-Οι coarse-grained, fine-grained και optimistic synchronization λίστες έχουν αρκετά θεωρητικά προβλήματα που παρουσιάζονται
-και στα αποτελέσματα των πειραμάτων. Οι δύο πρώτες δεν καταφέρνουν να ξεπεράσουν τις επιδόσεις της σειριακής δομής ενώ η τρίτη
+Οι coarse-grained, fine-grained και optimistic synchronization λίστες έχουν αρκετά προβλήματα, ακόμα και στο στάδιο της σχεδίασης και αυτό
+μεταφράζεται άμεσα και στα αποτελέσματα των πειραμάτων. Οι δύο πρώτες δεν καταφέρνουν να ξεπεράσουν τις επιδόσεις της σειριακής δομής ενώ η τρίτη
 έχει μέτριες επιδόσεις, ειδικά σε μικρές λίστες. Σε μεγάλες λίστες, τα συμπεράσματα είναι λίγο διαφορετικά για την optimistic λίστα, με
 κάποιες μικρές προοπτικές για κλιμάκωση.
 
@@ -372,4 +373,47 @@ lazy έχει locks στις μεθόδους add()/remove() όμως είναι
 \textbf{Σημείωση}: Πιστεύουμε ότι και η non-blocking θα είχε ίδια απόδοση με την lazy στο 100/0/0 workload αν δεν αναγκάζοταν να διαγράφει
 τα marked nodes, όπως κάνει στην δοσμένη υλοποίηση.
 
-`='
+\subsection{Bonus: Βελτίωση των έτοιμων υλοποιήσεων}
+
+Κάνοντας την άσκηση μου φάνηκε περίεργο που δεν κλιμάκωνε τόσο καλά η non-blocking και ακόμα πιο περίεργο ότι η optimistic είχε τόσο κακή επίδοση
+στο workload 100/0/0. Οι μετρήσεις για τα παρακάτω έγιναν σε εποχή που οι συγκεκριμένες ασκήσεις δεν έτρεχαν σαν παραδοτέο ώστε να μην μπλοκάρω τους
+πόρους από άλλες ομάδες.
+
+\subsubsection{Βελτίωση Non-Blocking}
+
+Η βελτίωση της non-blocking ήταν αρκετά απλή. Ακολουθήσαμε την υλοποίηση που δίνεται στο βιβλίο \textbf{The Art of Multiprocessor Programming} και
+αφαιρέσαμε τον έλεγχο για διαγραφή. Η επίδοση πλέον είναι αξιοσημείωτα καλύτερη για το workload 100/0/0.
+
+\begin{figure}[H]
+    \centering
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_custom_1024_100_0_0.png}
+        \includegraphics[scale=0.4]{outFiles/plots/concurrent_data_structs_custom_8192_100_0_0.png}
+    \caption{Concurrent Linked List - Bonus - "Better" Non-Blocking}
+    \label{fig:Concurrent Linked List - Bonus - "Better" Non-Blocking}
+\end{figure}
+
+\subsubsection{Βελτίωση Optimistic σε workload 100/0/0}
+
+Δεν ήταν πολύ λογικό αποτέλεσμα ότι η optimistic υλοποίησει δεν κλιμάκωνε στο workload 100/0/0, σε κανένα από τα 2 μεγέθη που ελέγχαμε. Επίσης σίγουρα
+δεν είναι λογική η χειρότερη επίδοσή της από την fine grain. Λογικά όμως είναι τα αποτελέσματα για τα υπόλοιπα workloads, καθώς όπως εξηγήσαμε παραπάνω, στην
+μικρή λίστα θα είχαμε πιθανά conflicts και μετά retries λόγω αποτυχίας της validate.
+
+Στο 100/0/0 όμως δεν θα έπρεπε να έχουμε ποτέ αποτυχία της validate αφού ποτέ δεν αφαιρείται ταυτόχρονα κάτι από την λίστα. Με trial and error βρήκαμε ότι
+αυτό που ευθύνεται για την κακή επίδοση είναι φαινόμενο starvation. 
+
+Έτσι όπως είναι δομημένο το μετροπρόγραμμα, γεμίζει στην αρχή η λίστα μέχρι την μέση. Για τον χρόνο που τρέχουμε το πείραμα (10 second), κάνουμε generate 2
+νούμερα με χρήση της rand(). Το πρώτο νούμερο είναι το κλειδί στο οποίο θα εκτελέσουμε μια από τις 3 μεθόδους και το δεύτερο νούμερο επιλέγει τι μέθοδο θα εκτελέσουμε.
+Στο δικό μας σενάριο, εκτελούνται μόνο μέθοδοι contains(). 
+
+Για εκτελέσεις του προγράμματος με αριθμό νημάτων μεγαλύτερο από 32, παρουσιάζεται το παρακάτω φαινόμενο: Τα νήματα που ανήκουν/προσδένονται στον 1ο επεξεργαστή
+χάνουν πολύ συχνότερα το contention για το lock. Υπάρχουν περιπτώσεις όπου νήμα με tid=1 μπορεί να λάβει το lock 100 φορές ενώ νήμα με tid που ανήκει σε άλλο CPU
+να λαμβάνει συνέχεια το lock. 
+
+Αυτό συμβαίνει γιατί αν το πρώτο νούμερο που γίνει rolled από την rand(), τύχει να είναι μεγαλύτερο ή ίσο με το μέσο του μεγέθους της λίστας, τότε το key που θα επιλεχθεί
+είναι πάντα το μεσαίο στοιχείο της λίστας. Επειδή όμως αυτό είναι ΠΟΛΥ πιθανό να συμβεί, τότε πολλά νήματα κάνουν contest το lock ίδιου στοιχείου. Το φαινόμενο αυτό εξαφανίζεται
+όταν προσθέτουμε και μεθόδους add/remove στο workload.
+
+Συμπεραίνουμε ότι τα (κάπως) παράλογα αποτελέσματα για την μέθοδο optimistic είναι λόγω μικρο-σφάλματος στο ίδιο το μετροπρόγραμμα και όχι της ίδιας της υλοποίησης.
+Πρόχειρη και δοκιμασμένη λύση είναι να αντικαταστήσουμε το lock της containts με try\_lock και να γίνεται time-out το operation αν ξεπεράσουμε ένα threshold, ακυρώνοντας έτσι
+το operation. Η παραπάνω λύση αν και πρόχειρη παρουσίασε καλύτερες επιδόσεις. Πλήρη διόρθωση θα ήταν να χρησιμοποιηθεί fair lock (π.χ. queue lock) το οποίο όμως θα ήταν δυσκολότερο
+στον προγραμματισμό.

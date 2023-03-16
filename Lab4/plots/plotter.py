@@ -100,13 +100,13 @@ def main():
             add = workload.split('/')[1]
             remove = workload.split('/')[2]
 
-            allJpgPath = f"outFiles/plots/concurrent_data_structs_all_{size}_{total}_{add}_{remove}.jpg"
-            lowJpgPath = f"outFiles/plots/concurrent_data_structs_low_{size}_{total}_{add}_{remove}.jpg"
-            highJpgPath = f"outFiles/plots/concurrent_data_structs_high_{size}_{total}_{add}_{remove}.jpg"
+            allJpgPath = f"outFiles/plots/concurrent_data_structs_all_{size}_{total}_{add}_{remove}.png"
+            lowJpgPath = f"outFiles/plots/concurrent_data_structs_low_{size}_{total}_{add}_{remove}.png"
+            highJpgPath = f"outFiles/plots/concurrent_data_structs_high_{size}_{total}_{add}_{remove}.png"
 
-            allSpeedupJpgPath = f"outFiles/plots/concurrent_data_structs_all_speedup_{size}_{total}_{add}_{remove}.jpg"
-            lowSpeedupJpgPath = f"outFiles/plots/concurrent_data_structs_low_speedup_{size}_{total}_{add}_{remove}.jpg"
-            highSpeedupJpgPath = f"outFiles/plots/concurrent_data_structs_high_speedup_{size}_{total}_{add}_{remove}.jpg"
+            allSpeedupJpgPath = f"outFiles/plots/concurrent_data_structs_all_speedup_{size}_{total}_{add}_{remove}.png"
+            lowSpeedupJpgPath = f"outFiles/plots/concurrent_data_structs_low_speedup_{size}_{total}_{add}_{remove}.png"
+            highSpeedupJpgPath = f"outFiles/plots/concurrent_data_structs_high_speedup_{size}_{total}_{add}_{remove}.png"
 
             allTitle = f"Concurrent Linked List - Size: {size} - Workload: {workload}"
             lowTitle = f"Concurrent Linked List - Low Performers - Size: {size} - Workload: {workload}"

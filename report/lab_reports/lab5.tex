@@ -138,8 +138,8 @@ membership, ώστε να γίνει η ανανέωση των κέτρων τ�
 Οι χρόνοι εκτέλεσεις και το speedup παρουσιάζονται σε κοινό διάγραμμα και για τις 3 εκδόσεις παρακάτω. 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.40]{/outFiles/plots/kmeans_gpu_common_figure_2_time.png}
-    \includegraphics[scale=0.40]{/outFiles/plots/kmeans_gpu_common_figure_2_speedup.png}
+    \includegraphics[scale=0.5]{/outFiles/plots/kmeans_gpu_common_figure_2_time.png}
+    \includegraphics[scale=0.5]{/outFiles/plots/kmeans_gpu_common_figure_2_speedup.png}
     \caption{K-Means - GPU Edition Size - numCoords=2}
     \label{fig:K-Means - GPU Edition - {Size:256Mb, numCoords:2, numClusters:16}}
 \end{figure}
@@ -158,7 +158,6 @@ Transpose & 797.969 & 406.419 & 701.031\\\hline
 Shared Memory & 796.91 & 406.115 & 433.498\\\hline
 
 \end{tabular}
-
 \hfill
 
 Το μέγεθος της μεταφοράς των δεδομένων είναι ίδιο και για τις 3 υλοποιήσεις και δεν μπορούμε να επέμβουμε
@@ -177,9 +176,7 @@ Shared Memory & 796.91 & 406.115 & 433.498\\\hline
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.40]{/outFiles/plots/kmeans_gpu_Naive_2_bottleneck_analysis.png}
-    \includegraphics[scale=0.40]{/outFiles/plots/kmeans_gpu_Transpose_2_bottleneck_analysis.png}
-    \includegraphics[scale=0.40]{/outFiles/plots/kmeans_gpu_Shmem_2_bottleneck_analysis.png}
+    \includegraphics[scale=0.5]{/outFiles/plots/kmeans_gpu_2_bottleneck_analysis.png}
     \caption{K-Means - Bottleneck Analysis - numCoords=2}
     \label{fig:K-Means - Bottleneck Analysis - numCoords=2}
 \end{figure}
@@ -198,16 +195,6 @@ cache-friendly (τουλάχιστον στο συγκεκριμένο configura
 Το κόστος της μεταφοράς είναι πάλι κοινό για όλες τις μεταφορές. Η shared έκδοση μπορεί να βελτιωθεί στο κομμάτι που αναλαμβάνει η CPU.
 Μια καλή λύση θα ήταν να ξαναγίνεται transpose ο πίνακας πριν μεταφερθεί στην CPU, καθώς η GPU μπορεί να κάνει αυτό το transpose πολύ πιο σύντομα.
 
-
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale=0.38]{/outFiles/plots/kmeans_gpu_common_figure_16_time.png}
-    \includegraphics[scale=0.38]{/outFiles/plots/kmeans_gpu_common_figure_16_speedup.png}
-    \caption{K-Means - GPU Edition Size - numCoords=16}
-    \label{fig:K-Means - GPU Edition - {Size:256Mb, numCoords:16, numClusters:16}}
-\end{figure}
-
 \noindent
 \begin{tabular}{|l||*{4}{c|}}\hline
 \backslashbox{Type}{Timers}
@@ -220,14 +207,17 @@ Shared Memory & 549.727 & 53.006 & 144.105\\\hline
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.38]{/outFiles/plots/kmeans_gpu_Naive_16_bottleneck_analysis.png}
-    \includegraphics[scale=0.38]{/outFiles/plots/kmeans_gpu_Transpose_16_bottleneck_analysis.png}
-    \includegraphics[scale=0.38]{/outFiles/plots/kmeans_gpu_Shmem_16_bottleneck_analysis.png}
+    \includegraphics[scale=0.5]{/outFiles/plots/kmeans_gpu_common_figure_16_time.png}
+    \includegraphics[scale=0.5]{/outFiles/plots/kmeans_gpu_common_figure_16_speedup.png}
+    \caption{K-Means - GPU Edition Size - numCoords=16}
+    \label{fig:K-Means - GPU Edition - {Size:256Mb, numCoords:16, numClusters:16}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{/outFiles/plots/kmeans_gpu_16_bottleneck_analysis.png}
     \caption{K-Means - Bottleneck Analysis - numCoords=16}
     \label{fig:K-Means - Bottleneck Analysis - numCoords=16}
 \end{figure}
-
-\subsection{K-Means All GPU}
-Ακόμα work in progress...
 
 \end{document}
