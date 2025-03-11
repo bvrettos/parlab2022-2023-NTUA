@@ -1,8 +1,8 @@
 # Lab 1 - Conway's Game of Life
 
-Απλή άσκηση με κύριο σκοπό την εξοικείωσή μας με τα εργαλεία/μηχανήματα του εργαστηρίου. Χρήση του OpenMP για παραλληλοποίηση του αλγορίθμου Game of Life.
+Simple exercise with the main purpose of familiarizing ourselves with the tools/machines of the lab. Use of OpenMP for parallelizing the Game of Life algorithm.
 
-O αλγόριθμος δίνεται έτοιμος και εμείς απλά προσθέτουμε το κατάλληλα #pragma directive ώστε να παραλληλοποιηθεί σωστά ο αλγόριθμος χωρίς να έχουμε απώλειες επίδοσης λόγω κακής διαχείρισης shared/copied μεταβλητών.
+The algorithm is provided and we simply add the appropriate #pragma directive so that the algorithm is parallelized correctly without performance losses due to poor management of shared/copied variables.
 
 ## Time
 <p align="center">

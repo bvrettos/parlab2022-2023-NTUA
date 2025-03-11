@@ -1,10 +1,10 @@
 # Lab 3 - Mutual Exclusion - Locks
 
-Στο προηγούμενο πρόβλημα που μελετήσαμε, συγκεκριμένα στην υλοποίηση με shared δομή πίνακα, χρησιμοποιούμε το directive **#pragma openmp atomic** για την επίλυση του race-condition. Στην συγκεκριμένη άσκηση, μελετάμε και άλλους τρόπους συγχρονισμού ώστε να υπάρξει mutual exclusion. Μετράμε την επίδοση τους και αποφασίζουμε σε βέλτιστη λύση για το πρόβλημα. Εν τέλει, καταλαβαίνουμε πως να χτίζουμε NUMA-aware, scalable spin-locks και την σημαντικότητα επιλογής σωστού lock για κάθε πρόβλημα.
+In the previous problem we studied, specifically in the implementation with a shared array structure, we use the directive **#pragma openmp atomic** to resolve the race-condition. In this exercise, we study other synchronization methods to achieve mutual exclusion. We measure their performance and decide on the optimal solution for the problem. Ultimately, we understand how to build NUMA-aware, scalable spin-locks and the importance of choosing the right lock for each problem.
 
 <p align="center">
     <img src="plots/outFilesAffinityMouliko/plots/kmeans_locks_all.jpg" height="65%" width="65%">
     <img src="plots/outFilesAffinityMouliko/plots/kmeans_locks_all_speedup.jpg" height="65%" width="65%">
 </p>
 
-Κυριότερο συμπέρασμα είναι ότι δεν υπάρχει "καλύτερο" lock. Κάθε υλοποίηση έχει λόγο χρήσης, εξαρτάται πάντα από το πρόβλημα που συναντάμε. Μερικές φορές η πιο over-engineered λύση ΔΕΝ είναι και η καλύτερη!
+The main conclusion is that there is no "best" lock. Each implementation has a reason for use, it always depends on the problem we encounter. Sometimes the most over-engineered solution is NOT the best one!
